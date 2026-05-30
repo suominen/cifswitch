@@ -96,11 +96,21 @@ belong in the *Status* note or a per-distro `###` section — they do not
 by themselves earn a fixed verdict.
 
 The combined distribution-status table is the **single source** for each
-row's kernel, cifs-utils, *Fixed since*, and status.  A per-distro `###`
-section is for notes that do not fit the table (LSM posture, reachability
-caveats, reference distros, channel structure).  Do **not** restate the
-table's columns there or add a parallel per-release table that duplicates
-them — put a newly verified version/status in the table row itself.
+row's kernel, cifs-utils, *Fixed since*, and status.  Don't restate the
+table's columns in prose or add a parallel per-release table that
+duplicates them — put a newly verified version/status in the table row
+itself.  Cell formatting: the **Kernel** and **cifs-utils** cells hold
+the version only (or `:grey_question:` when unverified) — no
+"unpatched" / "patched" word, since *Status* and *Fixed since* carry the
+verdict.  Label NixOS channels in the **Release** column in friendly form
+(`Unstable`, `Unstable (small)`, `25.11`, `25.11 (small)`), not the raw
+`nixos-…` identifiers.
+
+A per-distro `###` section is for **reader-facing** caveats that don't
+fit the table (exploitability, LSM / userns posture).  Keep tracking
+methodology out of it — which distros are reference-only, how NixOS
+channels are structured, and similar are agent guidance that belongs in
+this file, not the tracker.
 
 ## Conventions for status entries
 

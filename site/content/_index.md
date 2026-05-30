@@ -116,39 +116,31 @@ here and appear only as references where relevant.
 
 | Distribution | Release | Kernel | cifs-utils | Fixed since | Status |
 |---|---|---|---|---|---|
-| Debian | sid (unstable) | unpatched (7.0.10-1) | 7.4 | — | :x: Vulnerable |
-| Debian | forky (testing) | unpatched (7.0.9-1) | 7.4 | — | :x: Vulnerable |
-| Debian | 13 (trixie) | unpatched (6.12.86-1) | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
-| Debian | 12 (bookworm) | unpatched (6.1.170-3) | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
-| Debian | 11 (bullseye, LTS) | unpatched (5.10.223-1) | 6.11 | — | :x: Vulnerable — cifs-utils 6.11 &lt; 6.14; primary exploit path absent, reduced exposure |
+| Debian | sid (unstable) | 7.0.10-1 | 7.4 | — | :x: Vulnerable |
+| Debian | forky (testing) | 7.0.9-1 | 7.4 | — | :x: Vulnerable |
+| Debian | 13 (trixie) | 6.12.86-1 | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
+| Debian | 12 (bookworm) | 6.1.170-3 | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
+| Debian | 11 (bullseye, LTS) | 5.10.223-1 | 6.11 | — | :x: Vulnerable — cifs-utils 6.11 &lt; 6.14; primary exploit path absent, reduced exposure |
 | Proxmox VE | 9 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Proxmox VE | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| NixOS | `nixos-unstable` | 6.18.33 — unpatched | 7.5 | — | :x: Vulnerable — see NixOS notes |
-| NixOS | `nixos-unstable-small` | 6.18.33 — unpatched | 7.5 | — | :x: Vulnerable — see NixOS notes |
-| NixOS | `nixos-25.11` | 6.12.91 — unpatched | 7.4 | — | :x: Vulnerable — see NixOS notes |
-| NixOS | `nixos-25.11-small` | 6.12.91 — unpatched | 7.4 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | Unstable | 6.18.33 | 7.5 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | Unstable (small) | 6.18.33 | 7.5 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | 25.11 | 6.12.91 | 7.4 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | 25.11 (small) | 6.12.91 | 7.4 | — | :x: Vulnerable — see NixOS notes |
 | Rocky Linux | 10 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| Rocky Linux | 9 | unpatched | :grey_question: | — | :x: Vulnerable — SELinux may constrain the upcall; see notes |
+| Rocky Linux | 9 | :grey_question: | :grey_question: | — | :x: Vulnerable — SELinux may constrain the upcall; see notes |
 | Rocky Linux | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| Amazon Linux | 2023 | unpatched | :grey_question: | — | :x: Vulnerable |
+| Amazon Linux | 2023 | :grey_question: | :grey_question: | — | :x: Vulnerable |
 | Amazon Linux | 2 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 
 ### NixOS
 
-Each NixOS release line — unstable and 25.11 — has a default channel and
-a faster, server-oriented `-small` subset that usually leads it by a
-point release; all four are tracked.  NixOS enables unprivileged user
-namespaces by default, but `cifs.upcall` (cifs-utils) is only present and
-wired as the `request-key` handler on hosts actually configured for
-CIFS/SMB mounts — so the full chain applies only to those hosts.
+NixOS enables unprivileged user namespaces by default, but `cifs.upcall`
+(cifs-utils) is only present and wired as the `request-key` handler on
+hosts actually configured for CIFS/SMB mounts — so the full chain applies
+only to those hosts.
 
 ### Rocky Linux / RHEL family
-
-The table tracks **Rocky Linux** (10 / 9 / 8).  **RHEL** and **AlmaLinux**
-are not tracked as separate rows — Rocky rebuilds RHEL, and AlmaLinux
-usually ships the same fix ahead of Rocky in its `testing` repo, so both
-serve as references / leading indicators for the Rocky kernel (`6.12.x`
-on 10, `5.14.x` on 9, `4.18.x` on 8).
 
 On the EL family `cifs` is a loadable module and SELinux is enforcing by
 default, which may constrain `cifs.upcall`'s ability to load an arbitrary
