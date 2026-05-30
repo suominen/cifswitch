@@ -120,17 +120,28 @@ here and appear only as references where relevant.
 | Debian | 13 (trixie) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
 | Debian | 12 (bookworm) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
 | Debian | 11 (bullseye, LTS) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
+| Proxmox VE | 9 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| Proxmox VE | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| NixOS | `nixos-unstable` | :grey_question: | :grey_question: | — | :grey_question: Unverified — see notes |
+| NixOS | `nixos-unstable-small` | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| NixOS | `nixos-25.11` | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| NixOS | `nixos-25.11-small` | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Rocky Linux | 10 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Rocky Linux | 9 | unpatched | :grey_question: | — | :x: Vulnerable — SELinux may constrain the upcall; see notes |
 | Rocky Linux | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Amazon Linux | 2023 | unpatched | :grey_question: | — | :x: Vulnerable |
 | Amazon Linux | 2 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| NixOS | `nixos-unstable` | :grey_question: | :grey_question: | — | :grey_question: Unverified — see notes |
-| NixOS | `nixos-unstable-small` | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| NixOS | `nixos-25.11` | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| NixOS | `nixos-25.11-small` | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| Proxmox VE | 9 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| Proxmox VE | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+
+### NixOS
+
+Each NixOS release line — unstable and 25.11 — has a default channel and
+a faster, server-oriented `-small` subset that usually leads it by a
+point release; all four are tracked.  NixOS enables unprivileged user
+namespaces by default, but `cifs.upcall` (cifs-utils) is only present and
+wired as the `request-key` handler on hosts actually configured for
+CIFS/SMB mounts.  A row's kernel pin and cifs-utils version are determined
+per channel from the nixpkgs tree; `tracker.security.nixos.org` is a
+secondary signal only.
 
 ### Rocky Linux / RHEL family
 
@@ -147,17 +158,6 @@ as not exploitable.  The shipped `cifs-utils` version is the other gate:
 older EL releases may predate the 6.14 namespace-switch upcall.  Once a
 CVE is assigned, RLSAs (and the matching RHSA / ALSA references) carry the
 fixed kernel.
-
-### NixOS
-
-Each NixOS release line — unstable and 25.11 — has a default channel and
-a faster, server-oriented `-small` subset that usually leads it by a
-point release; all four are tracked.  NixOS enables unprivileged user
-namespaces by default, but `cifs.upcall` (cifs-utils) is only present and
-wired as the `request-key` handler on hosts actually configured for
-CIFS/SMB mounts.  A row's kernel pin and cifs-utils version are determined
-per channel from the nixpkgs tree; `tracker.security.nixos.org` is a
-secondary signal only.
 
 ## Detection
 
@@ -264,9 +264,9 @@ kernel-side hole.
 
 ### Distributions
 
-- Tracked rows: Debian sid / forky / 13 / 12 / 11, Rocky Linux 10/9/8,
-  Amazon Linux 2023 and 2, NixOS (nixos-unstable[-small],
-  nixos-25.11[-small]), Proxmox VE 9/8.  The disclosure
+- Tracked rows: Debian sid / forky / 13 / 12 / 11, Proxmox VE 9/8,
+  NixOS (nixos-unstable[-small], nixos-25.11[-small]), Rocky Linux
+  10/9/8, Amazon Linux 2023 and 2.  The disclosure
   writeup (2026-05-27) also reported Ubuntu 22.04/20.04/18.04, AlmaLinux
   9.7, Oracle Linux 9/8, CentOS Stream 9, SLES 15 SP7, openSUSE Leap
   15.6, Linux Mint 22.3/21.3, and Kali 2021.4+ as vulnerable; those are
