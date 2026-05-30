@@ -1,4 +1,15 @@
 <script>
+    // Distribution-status tables: tag the Release column (2nd cell) with
+    // `nowrap` before the first-column rowspan collapse below removes
+    // cells. After a collapse the Release cell becomes cells[0] in the
+    // collapsed rows, so a positional nth-child(2) CSS rule would land on
+    // the wrong column; tagging by class survives the shift.
+    document.querySelectorAll('.post-content table.distros').forEach((table) => {
+        for (const row of table.tBodies[0]?.rows || []) {
+            if (row.cells[1]) row.cells[1].classList.add('nowrap');
+        }
+    });
+
     document.querySelectorAll('.post-content table').forEach((table) => {
         const rows = table.tBodies[0]?.rows;
         if (!rows || rows.length < 2) return;

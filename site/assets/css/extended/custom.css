@@ -33,14 +33,15 @@
   overflow-wrap: anywhere;
 }
 
-/* Distribution-status table — keep the Release column (col 2) on a
-   single line so labels like "Debian 11 (bullseye, LTS)" or
-   "Unstable (small)" don't wrap at the comma/space. Trade-off: the
-   table can widen past the content column on very narrow viewports;
-   the page scrolls horizontally rather than the column reflowing —
-   acceptable for an information-dense reference. */
-.post-content table.distros th:nth-child(2),
-.post-content table.distros td:nth-child(2) {
+/* Distribution-status table — keep the Release column on a single line
+   so labels like "Debian 11 (bullseye, LTS)" or "Unstable (small)" don't
+   wrap at the comma/space. The Release cells are tagged `.nowrap` by
+   extend_footer.html (a positional nth-child rule can't be used: the
+   first-column rowspan collapse removes cells and shifts the indices).
+   Trade-off: the table can widen past the content column on very narrow
+   viewports; the page scrolls horizontally rather than the column
+   reflowing — acceptable for an information-dense reference. */
+.post-content table.distros td.nowrap {
   white-space: nowrap;
 }
 
