@@ -132,6 +132,7 @@ here and appear only as references where relevant.
 | Rocky Linux | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Amazon Linux | 2023 | :grey_question: | :grey_question: | — | :x: Vulnerable |
 | Amazon Linux | 2 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+{.distros}
 
 ### NixOS
 

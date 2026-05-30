@@ -33,6 +33,17 @@
   overflow-wrap: anywhere;
 }
 
+/* Distribution-status table — keep the Release column (col 2) on a
+   single line so labels like "Debian 11 (bullseye, LTS)" or
+   "Unstable (small)" don't wrap at the comma/space. Trade-off: the
+   table can widen past the content column on very narrow viewports;
+   the page scrolls horizontally rather than the column reflowing —
+   acceptable for an information-dense reference. */
+.post-content table.distros th:nth-child(2),
+.post-content table.distros td:nth-child(2) {
+  white-space: nowrap;
+}
+
 .post-content td {
   vertical-align: top;
   text-align: left;

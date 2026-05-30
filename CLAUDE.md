@@ -104,7 +104,9 @@ the version only (or `:grey_question:` when unverified) — no
 "unpatched" / "patched" word, since *Status* and *Fixed since* carry the
 verdict.  Label NixOS channels in the **Release** column in friendly form
 (`Unstable`, `Unstable (small)`, `25.11`, `25.11 (small)`), not the raw
-`nixos-…` identifiers.
+`nixos-…` identifiers.  Keep the `{.distros}` block attribute on the line
+**immediately after** the table (no blank line between) — it drives the
+`custom.css` rule that stops the Release column from wrapping mid-label.
 
 A per-distro `###` section is for **reader-facing** caveats that don't
 fit the table (exploitability, LSM / userns posture).  Keep tracking
