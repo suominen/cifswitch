@@ -157,26 +157,48 @@ fixed kernel.
 practice, compare the running kernel against the *Upstream fixed
 versions* table and your distro's row above rather than reading source.
 
-**Is `cifs` present / loadable?**
+**Is `cifs` present / loadable?**  Whether it is loaded right now:
 
 ```bash
 lsmod | grep '^cifs '
+```
+
+Whether the module is available to load at all:
+
+```bash
 modinfo cifs >/dev/null 2>&1 && echo "cifs available" || echo "cifs not present"
 ```
 
 **Which cifs-utils is installed?**  (≥ 6.14 is the reachability gate.)
+The helper reports its own version, e.g. `mount.cifs version: 7.0`:
 
 ```bash
-mount.cifs -V                 # e.g. "mount.cifs version: 7.0"
+mount.cifs -V
+```
+
+Or query the package manager:
+
+```bash
 dpkg -l cifs-utils 2>/dev/null || rpm -q cifs-utils 2>/dev/null
 ```
 
-**Are unprivileged user namespaces allowed?**
+**Are unprivileged user namespaces allowed?**  On Debian/Ubuntu, `1`
+means allowed:
 
 ```bash
-sysctl kernel.unprivileged_userns_clone 2>/dev/null              # Debian/Ubuntu: 1 = allowed
-sysctl kernel.apparmor_restrict_unprivileged_userns 2>/dev/null  # Ubuntu 24.04+: 1 = restricted
-cat /proc/sys/user/max_user_namespaces                           # 0 = disabled
+sysctl kernel.unprivileged_userns_clone 2>/dev/null
+```
+
+On Ubuntu 24.04+, `1` means the AppArmor userns restriction is active:
+
+```bash
+sysctl kernel.apparmor_restrict_unprivileged_userns 2>/dev/null
+```
+
+Across all distros, `0` here means user namespaces are disabled:
+
+```bash
+cat /proc/sys/user/max_user_namespaces
 ```
 
 **Is `cifs.upcall` wired as the key handler?**
@@ -194,14 +216,16 @@ system you are not authorised to test.
 
 The real fix is the kernel patch.  Until a fixed kernel is installed, the
 most reliable interim mitigation is to remove the attacker's ability to
-build the fake namespace by **disabling unprivileged user namespaces**:
+build the fake namespace by **disabling unprivileged user namespaces**.
+On Debian/Ubuntu:
 
 ```bash
-# Debian/Ubuntu
 sudo sysctl -w kernel.unprivileged_userns_clone=0
 ```
+
+Or generically, on any distro:
+
 ```bash
-# Generic (all distros)
 sudo sysctl -w user.max_user_namespaces=0
 ```
 
@@ -216,9 +240,23 @@ default:
 sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
 ```
 
-If CIFS/SMB client mounts are not needed, removing or blacklisting the
-`cifs` module (and not installing cifs-utils) removes the upcall surface
-entirely.  **Downgrading cifs-utils below 6.14 is not a reliable
+If CIFS/SMB client mounts are not needed, blocking the `cifs` module
+removes the upcall surface entirely.  A bare `blacklist cifs` only
+suppresses alias-based autoload — the module still loads on an explicit
+`mount -t cifs`, so use an `install` override to block it outright:
+
+```bash
+echo 'install cifs /bin/false' | sudo tee /etc/modprobe.d/blacklist-cifs.conf
+```
+
+Then unload it if it is currently loaded (unmount any CIFS shares first):
+
+```bash
+sudo modprobe -r cifs
+```
+
+Not installing (or removing) cifs-utils drops the root `cifs.upcall`
+helper as well.  **Downgrading cifs-utils below 6.14 is not a reliable
 mitigation** — the disclosure notes some older backported versions are
 also affected, and it sacrifices functionality without closing the
 kernel-side hole.
