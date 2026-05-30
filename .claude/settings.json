@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C ~/src/auto-update/cifswitch describe *)",
+      "Bash(git -C ~/src/auto-update/cifswitch diff *)",
+      "Bash(git -C ~/src/auto-update/cifswitch diff)",
+      "Bash(git -C ~/src/auto-update/cifswitch log *)",
+      "Bash(git -C ~/src/auto-update/cifswitch show *)",
+      "Bash(git -C ~/src/auto-update/cifswitch status *)",
+      "Bash(git -C ~/src/auto-update/cifswitch status)",
+      "Bash(git -C ~/src/cifswitch describe *)",
+      "Bash(git -C ~/src/cifswitch diff *)",
+      "Bash(git -C ~/src/cifswitch diff)",
+      "Bash(git -C ~/src/cifswitch log *)",
+      "Bash(git -C ~/src/cifswitch show *)",
+      "Bash(git -C ~/src/cifswitch status *)",
+      "Bash(git -C ~/src/cifswitch status)",
+      "Bash(git -C ~/src/linux/stable describe *)",
+      "Bash(git -C ~/src/linux/stable diff *)",
+      "Bash(git -C ~/src/linux/stable diff)",
+      "Bash(git -C ~/src/linux/stable log *)",
+      "Bash(git -C ~/src/linux/stable show *)",
+      "Bash(git -C ~/src/linux/stable status *)",
+      "Bash(git -C ~/src/linux/stable status)",
+      "Bash(git -C ~/src/linux/vulns describe *)",
+      "Bash(git -C ~/src/linux/vulns diff *)",
+      "Bash(git -C ~/src/linux/vulns diff)",
+      "Bash(git -C ~/src/linux/vulns grep *)",
+      "Bash(git -C ~/src/linux/vulns log *)",
+      "Bash(git -C ~/src/linux/vulns show *)",
+      "Bash(git -C ~/src/linux/vulns status *)",
+      "Bash(git -C ~/src/linux/vulns status)",
+      "Bash(git -C ~/src/nixos/nixpkgs describe *)",
+      "Bash(git -C ~/src/nixos/nixpkgs diff *)",
+      "Bash(git -C ~/src/nixos/nixpkgs diff)",
+      "Bash(git -C ~/src/nixos/nixpkgs log *)",
+      "Bash(git -C ~/src/nixos/nixpkgs show *)",
+      "Bash(git -C ~/src/nixos/nixpkgs status *)",
+      "Bash(git -C ~/src/nixos/nixpkgs status)"
+    ]
+  }
+}

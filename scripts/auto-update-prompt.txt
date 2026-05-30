@@ -1,0 +1,128 @@
+You are running headless from cron to refresh the CIFSwitch patch tracker.
+The wrapper has already fetched origin and checked out the auto-update
+branch with origin/main merged forward, and has also refreshed the local
+kernel clone under ~/src/linux/stable and the nixpkgs clone at
+~/src/nixos/nixpkgs — inspect them via the `origin/...` remote-tracking
+refs without re-fetching.
+
+CIFSwitch is a Linux kernel local privilege escalation in the CIFS
+client: the kernel never validated that a `cifs.spnego` key description
+originated from kernel code, so an unprivileged user can forge one and
+steer the rootful `cifs.upcall` helper (cifs-utils >= 6.14) into loading
+an attacker-controlled NSS module as root. The canonical fix is Linus
+mainline commit 3da1fdf4efbc490041eb4f836bf596201203f8f2, which adds a
+`.vet_description = cifs_spnego_key_vet_description` hook in
+fs/smb/client/cifs_spnego.c (pre-6.7 path: fs/cifs/cifs_spnego.c). No CVE
+has been assigned yet — the tracker uses the placeholder CVE-2026-XXXXX.
+
+References:
+- Writeup: https://heyitsas.im/posts/cifswitch/
+- Public PoC: https://github.com/manizada/CIFSwitch
+- Kernel fix: https://github.com/torvalds/linux/commit/3da1fdf4efbc490041eb4f836bf596201203f8f2
+
+Per-branch fixed versions and per-distro status all live in
+site/content/_index.md (the canonical tracker). Read it first rather than
+relying on anything cached here.
+
+1. Read CLAUDE.md to learn the project conventions (especially the
+   two-axis kernel + cifs-utils tracking, the status-emoji meanings, the
+   "Fixed since" rule, and the date handling), then read
+   site/content/_index.md.
+
+2. Re-verify each entry currently marked vulnerable (:x:), partial
+   (:warning:), or unverified (:grey_question:).
+
+   Note on git.kernel.org: cgit HTML pages (any URL ending in /log/,
+   /tree/, /commit/, etc.) are Anubis-gated and WebFetch hits the no-JS
+   challenge. Use the persistent local kernel clone for the kernel-tree
+   checks — already refreshed by the wrapper, inspect via the
+   `origin/...` remote-tracking refs:
+
+     ~/src/linux/stable   — stable/linux.git
+
+   (Setup is documented in CLAUDE.md; if the clone is missing, fail
+   loudly rather than guessing.) Plain-text kernel.org endpoints
+   (e.g. /finger_banner) are still WebFetch-able.
+
+   a. Upstream stable kernels: GET https://www.kernel.org/finger_banner
+      for the current point release per stable tree, then for each branch
+      in the tracker's *Upstream fixed versions* table check whether a
+      backport of the fix has landed:
+        git -C ~/src/linux/stable log --oneline origin/linux-<series>.y \
+          -- fs/smb/client/cifs_spnego.c fs/cifs/cifs_spnego.c
+      Look for a backport of 3da1fdf4efbc (adds the vet_description hook
+      / cifs_spnego_key_vet_description). The legacy fs/cifs path applies
+      to branches older than 6.7. Record the first fixed point release
+      per branch.
+
+   b. Once a CVE is assigned, switch the placeholder CVE-2026-XXXXX
+      throughout the tracker to the real ID and add the CVE-keyed feeds
+      (NVD, MITRE CVE Awg JSON, Red Hat JSON, FIRST EPSS, CISA KEV).
+      Watch the writeup / oss-security for the assignment. Then use the
+      local kernel CVE database (refreshed by the wrapper) as the
+      canonical CVE -> fix-commit / fixed-version source:
+        git -C ~/src/linux/vulns grep -l 3da1fdf4efbc -- 'cve/published/*'
+        git -C ~/src/linux/vulns show HEAD:cve/published/2026/CVE-2026-NNNNN.dyad
+      The .dyad file lists each <introduced>:<fixed> commit pair per
+      affected branch — cross-check it against the *Upstream fixed
+      versions* table.
+
+3. Two axes per distro row — verify BOTH:
+
+   KERNEL (the canonical fix; this is what flips Status to fixed and sets
+   "Fixed since"):
+      - Debian: current default kernel per suite via the dak madison API:
+          curl -fsS 'https://api.ftp-master.debian.org/madison?package=linux&s=sid,forky,trixie,bookworm,bullseye&text=on'
+        plus https://security-tracker.debian.org/tracker/ once a CVE is
+        assigned.
+      - Ubuntu: https://ubuntu.com/security/cves (and the kernel version
+        per release).
+      - Rocky/RHEL/Alma/Oracle: https://errata.build.resf.org/api/v2/advisories:rss,
+        https://access.redhat.com/security/security-updates/, and the
+        AlmaLinux blog/testing repo as a leading indicator.
+      - Amazon Linux: https://alas.aws.amazon.com/
+      - NixOS — the verdict source is the local nixpkgs clone (already
+        refreshed by the wrapper), not the web tracker. For each tracked
+        channel resolve the channel's pinned revision (curl -fsSL the
+        channels.nixos.org/<channel>/git-revision pointer — it 302s, so
+        follow redirects), then at that revision read the kernel pin:
+          git -C ~/src/nixos/nixpkgs show \
+            "<rev>:pkgs/os-specific/linux/kernel/kernels-org.json"
+        https://tracker.security.nixos.org/ is a secondary signal only.
+      - Proxmox: https://forum.proxmox.com/threads/proxmox-virtual-environment-security-advisories.149331/
+
+   CIFS-UTILS (the reachability gate; >= 6.14 ships the namespace-
+   switching cifs.upcall — informational, does NOT by itself set the
+   verdict):
+      - Debian/Ubuntu: the madison API with package=cifs-utils, e.g.
+          curl -fsS 'https://api.ftp-master.debian.org/madison?package=cifs-utils&s=sid,forky,trixie,bookworm,bullseye&text=on'
+      - EL family / SUSE / Amazon: the cifs-utils RPM version in the
+        distro's package metadata or advisory text.
+      - NixOS: at the channel revision,
+          git -C ~/src/nixos/nixpkgs show \
+            "<rev>:pkgs/os-specific/linux/cifs-utils/default.nix" | grep -i version
+      - Upstream cifs-utils (watch for cifs.upcall hardening):
+        https://git.samba.org/?p=cifs-utils.git;a=summary
+
+   USERNS / LSM posture only matters when it changes the verdict to
+   :warning: (mitigated-by-default), e.g. Ubuntu 24.04+ AppArmor userns
+   restriction. A mitigation is never :white_check_mark: — the kernel
+   hole remains until the kernel ships the fix.
+
+4. Edit site/content/_index.md to reflect any changes per the conventions
+   in CLAUDE.md (status badges, kernel + cifs-utils versions, the
+   "Fixed since" sticky date, and the `## Verification log` update
+   rules). If you make content changes, bump the `lastmod` date in the
+   front-matter. If nothing changed, leave the file alone — don't bump
+   `lastmod` on a no-op run.
+
+5. If you made changes, commit them on the current branch (which is
+   `auto-update` — the wrapper has already switched to it and merged
+   origin/main forward). Do NOT create a new branch, do NOT switch
+   branches, do NOT push, and do NOT open a PR. The user merges
+   auto-update into main manually. If nothing changed, exit without
+   committing.
+
+If you hit unexpected errors or substantive changes you can't confidently
+encode, commit your best attempt and note open questions in the commit
+message.

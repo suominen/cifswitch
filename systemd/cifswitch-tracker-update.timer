@@ -1,0 +1,10 @@
+[Unit]
+Description=Run CIFSwitch tracker update twice daily
+
+[Timer]
+OnCalendar=*-*-* 05,17:37:00
+Persistent=true
+RandomizedDelaySec=5m
+
+[Install]
+WantedBy=timers.target
