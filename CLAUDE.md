@@ -370,6 +370,55 @@ git -C ~/src/nixos/nixpkgs show \
 the clone on every run; for interactive use, `git -C ~/src/nixos/nixpkgs
 fetch --quiet origin` first.
 
+## Proxmox kernel version source
+
+Proxmox ships its **own** kernel (`proxmox-kernel-*`, Ubuntu-derived) with
+a Debian userland, so the Debian madison feed does not cover it.  Pull the
+kernel version from the `pve-no-subscription` `Packages` index — plain
+HTTP, not Anubis/SPA-gated.  VE 9 is trixie-based, VE 8 bookworm-based:
+
+```
+url=http://download.proxmox.com/debian/pve/dists/<trixie|bookworm>/pve-no-subscription/binary-amd64/Packages.gz
+# default kernel series: highest proxmox-default-kernel -> Depends: proxmox-kernel-X.Y
+curl -fsSL "$url" | zcat | grep -A3 '^Package: proxmox-default-kernel'
+# newest image in that series: proxmox-kernel-X.Y.Z-N-pve (ignore -signed/-template)
+curl -fsSL "$url" | zcat | grep '^Package: proxmox-kernel-<X.Y>\.'
+```
+
+As of 2026-05-30: VE 9 default `proxmox-kernel-7.0` (newest 7.0.6-2-pve),
+VE 8 default `proxmox-kernel-6.8` (newest 6.8.12-28-pve) — VE 8 also
+offers an opt-in 6.14 `bpo12` series.  cifs-utils is **not** in the
+Proxmox repo; it comes from the Debian base (VE 9 ⇒ trixie, VE 8 ⇒
+bookworm — use those madison rows).  Whether a Proxmox kernel carries the
+fix tracks the corresponding upstream/Ubuntu series, not Debian's.
+
+## Rocky / Amazon kernel + cifs-utils version source (RPM repodata)
+
+Both ship `kernel` and `cifs-utils` as RPMs; pull versions straight from
+repodata (`repomd.xml` → the `*-primary.xml.gz` index), no advisory/CVE
+needed.  For each repo: fetch `<base>/repodata/repomd.xml`, read the
+`<location href="…-primary.xml.gz">`, fetch that, `zcat`, and read the
+`<name>` / `<version ver= rel=>` pairs for `kernel` and `cifs-utils`.  The
+EL `os/` repos accumulate every point release's kernel, so pick the
+numerically-highest `rel` (string sort is wrong — `553.125` sorts before
+`553.97`).
+
+- **Rocky** BaseOS: `https://dl.rockylinux.org/pub/rocky/<8|9|10>/BaseOS/x86_64/os`
+  — `kernel` and `cifs-utils` are both in BaseOS.  The dist tag encodes
+  the minor (`el9_8` = 9.8, `el10_2` = 10.2).
+- **Amazon Linux** core (resolve the mirror first — it returns one base
+  URL): `curl -fsSL https://cdn.amazonlinux.com/2/core/latest/x86_64/mirror.list`
+  (AL2) and `…/al2023/core/mirrors/latest/x86_64/mirror.list` (AL2023).
+  AL2's core kernel is the 4.14 stream (5.4/5.10/5.15 live in separate
+  `kernel-<ver>` repos/extras); AL2023's default is the 6.1 stream
+  (`kernel6.12`/`kernel6.18` are separate streams — not tracked as rows).
+  AL2 cifs-utils is 6.2 (< 6.14 — reduced exposure).
+
+As of 2026-05-30: Rocky 10 `6.12.0-211.16.1.el10_2` / cifs-utils 7.5,
+Rocky 9 `5.14.0-687.10.1.el9_8` / 7.5, Rocky 8 `4.18.0-553.125.1.el8_10`
+/ 7.0; Amazon Linux 2023 `6.1.172-216.329.amzn2023` / 7.5, Amazon Linux 2
+`4.14.355-282.729.amzn2` / 6.2.  All kernels unpatched.
+
 ## cifs-utils version sources
 
 cifs-utils is a separate Samba project; track the per-distro package
@@ -378,6 +427,9 @@ version, not just the kernel:
 - **Debian/Ubuntu:** the dak-backed madison API —
   `https://api.ftp-master.debian.org/madison?package=cifs-utils&s=sid,forky,trixie,bookworm,bullseye&text=on`
   (Ubuntu has its own Launchpad source; cross-check there for Ubuntu rows).
+- **Proxmox VE:** no cifs-utils in the Proxmox repo — it is the Debian
+  base version (VE 9 ⇒ trixie, VE 8 ⇒ bookworm), so reuse the Debian
+  madison rows above.
 - **EL family / SUSE / Amazon:** the cifs-utils RPM version in the
   distro's package metadata or advisory text.
 - **Upstream:** <https://git.samba.org/?p=cifs-utils.git;a=summary> for
@@ -401,7 +453,8 @@ version, not just the kernel:
 | NixOS security tracker (secondary) | <https://tracker.security.nixos.org/> |
 | NixOS channel pointers | <https://channels.nixos.org/nixos-unstable/git-revision> |
 | Amazon Linux | <https://alas.aws.amazon.com/> |
-| Proxmox advisories | <https://forum.proxmox.com/threads/proxmox-virtual-environment-security-advisories.149331/> |
+| Proxmox advisories (thread) | <https://forum.proxmox.com/threads/proxmox-virtual-environment-security-advisories.149331/> |
+| Proxmox advisories (user posts, newest first) | <https://forum.proxmox.com/search/16039688/?t=post&c[users]=ProxmoxSecurityAdvisory&o=date> |
 
 Once a CVE is assigned, switch the placeholder `CVE-2026-XXXXX`
 throughout the tracker to the real ID and add the CVE-keyed feeds (NVD,

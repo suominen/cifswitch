@@ -107,12 +107,11 @@ namespace-switching `cifs.upcall`), tempered by whether unprivileged user
 namespaces and the LSM policy actually allow the upcall path.  *Fixed
 since* records the date the kernel fix first lands in that release.
 
-The rows below track a focused set of distributions; current per-distro
-kernel and cifs-utils package versions, and any shipped fixes, are being
-verified — unconfirmed cells are marked :grey_question:.  Other systems
-the disclosure writeup (2026-05-27) reported vulnerable — Ubuntu,
-AlmaLinux, Oracle Linux, openSUSE / SLES, Fedora, Arch — are not tracked
-here and appear only as references where relevant.
+The rows below track a focused set of distributions with their current
+per-distro kernel and cifs-utils package versions and any shipped fixes.
+Other systems the disclosure writeup (2026-05-27) reported vulnerable —
+Ubuntu, AlmaLinux, Oracle Linux, openSUSE / SLES, Fedora, Arch — are not
+tracked here and appear only as references where relevant.
 
 | Distribution | Release | Kernel | cifs-utils | Fixed since | Status |
 |---|---|---|---|---|---|
@@ -121,17 +120,17 @@ here and appear only as references where relevant.
 | Debian | 13 (trixie) | 6.12.86-1 | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
 | Debian | 12 (bookworm) | 6.1.170-3 | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
 | Debian | 11 (bullseye, LTS) | 5.10.223-1 | 6.11 | — | :x: Vulnerable — cifs-utils 6.11 &lt; 6.14; primary exploit path absent, reduced exposure |
-| Proxmox VE | 9 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| Proxmox VE | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| Proxmox VE | 9 | 7.0.6-2-pve | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
+| Proxmox VE | 8 | 6.8.12-28-pve | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
 | NixOS | Unstable | 6.18.33 | 7.5 | — | :x: Vulnerable — see NixOS notes |
 | NixOS | Unstable (small) | 6.18.33 | 7.5 | — | :x: Vulnerable — see NixOS notes |
 | NixOS | 25.11 | 6.12.91 | 7.4 | — | :x: Vulnerable — see NixOS notes |
 | NixOS | 25.11 (small) | 6.12.91 | 7.4 | — | :x: Vulnerable — see NixOS notes |
-| Rocky Linux | 10 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| Rocky Linux | 9 | :grey_question: | :grey_question: | — | :x: Vulnerable — SELinux may constrain the upcall; see notes |
-| Rocky Linux | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| Amazon Linux | 2023 | :grey_question: | :grey_question: | — | :x: Vulnerable |
-| Amazon Linux | 2 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| Rocky Linux | 10 | 6.12.0-211.16.1.el10_2 | 7.5 | — | :x: Vulnerable — see Rocky notes |
+| Rocky Linux | 9 | 5.14.0-687.10.1.el9_8 | 7.5 | — | :x: Vulnerable — see Rocky notes |
+| Rocky Linux | 8 | 4.18.0-553.125.1.el8_10 | 7.0 | — | :x: Vulnerable — see Rocky notes |
+| Amazon Linux | 2023 | 6.1.172-216.329.amzn2023 | 7.5 | — | :x: Vulnerable |
+| Amazon Linux | 2 | 4.14.355-282.729.amzn2 | 6.2 | — | :x: Vulnerable — cifs-utils 6.2 &lt; 6.14; primary exploit path absent, reduced exposure |
 {.distros}
 
 ### NixOS
@@ -277,8 +276,25 @@ kernel-side hole.
 - **NixOS** (via local nixpkgs clone): all four channels verified —
   unpatched kernels, cifs-utils ≥ 6.14; all rows flipped from
   `:grey_question:` to `:x: Vulnerable`.
-- **Proxmox VE 9/8**, **Rocky Linux 10/8**, and **Amazon Linux 2** remain
-  `:grey_question:` — kernel version not yet confirmed from distro repos.
+- **Proxmox VE** (via the `pve-no-subscription` `Packages` index): VE 9
+  default kernel `proxmox-kernel-7.0` (newest image 7.0.6-2-pve), VE 8
+  default `proxmox-kernel-6.8` (newest 6.8.12-28-pve); both unpatched.
+  Proxmox ships its own kernel but Debian userland, so cifs-utils is the
+  Debian base version (trixie 7.4, bookworm 7.0 — both ≥ 6.14); both rows
+  flipped from `:grey_question:` to `:x: Vulnerable`.
+- **Rocky Linux** (via BaseOS `repomd.xml` → `primary` on
+  `dl.rockylinux.org`): 10 ⇒ kernel 6.12.0-211.16.1.el10_2 / cifs-utils
+  7.5; 9 ⇒ 5.14.0-687.10.1.el9_8 / 7.5; 8 ⇒ 4.18.0-553.125.1.el8_10 /
+  7.0.  All kernels unpatched (no RLSA — no CVE yet), cifs-utils ≥ 6.14;
+  10 and 8 flipped from `:grey_question:` to `:x:`.  SELinux-enforcing
+  default may still constrain the upcall (see Rocky notes).
+- **Amazon Linux** (via the `cdn.amazonlinux.com` core mirror →
+  `primary`): 2023 ⇒ kernel 6.1.172-216.329.amzn2023 / cifs-utils 7.5
+  (default 6.1 stream; `kernel6.12`/`kernel6.18` streams not tracked
+  separately); 2 ⇒ core kernel 4.14.355-282.729.amzn2 / cifs-utils 6.2.
+  Both kernels unpatched.  AL2's cifs-utils 6.2 is < 6.14 — primary
+  exploit path absent, reduced exposure; its row flipped from
+  `:grey_question:` to `:x:`.
 - No CVE-keyed feeds (NVD, EPSS, Red Hat JSON, CISA KEV) resolve yet —
   no CVE has been assigned.
 
