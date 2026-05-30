@@ -79,19 +79,21 @@ The effective lifetime of the bug is therefore roughly 19 years
 
 ## Upstream fixed versions
 
-The fix is present in Linus mainline.  Per-branch stable backport status
-is being verified against the stable tree and is marked unverified until
-confirmed.
+The fix is present in Linus mainline, merged after the v7.0 branch point
+— it will first appear in a stable release when v7.1 ships.  No stable
+branch has received the backport yet (verified 2026-05-30 against the
+local stable clone).
 
 | Branch | Status | Current | Notes |
 |---|---|---|---|
-| Linus mainline | :white_check_mark: Carries `3da1fdf4efbc` | — | first released mainline tag pending verification |
-| 6.18.x | :grey_question: Backport status unverified | — | |
-| 6.12.x | :grey_question: Backport status unverified | — | LTS 2028-12 |
-| 6.6.x  | :grey_question: Backport status unverified | — | LTS 2026-12 |
-| 6.1.x  | :grey_question: Backport status unverified | — | LTS 2026-12 |
-| 5.15.x | :grey_question: Backport status unverified | — | LTS 2026-12 |
-| 5.10.x | :grey_question: Backport status unverified | — | LTS 2026-12 |
+| Linus mainline | :white_check_mark: Carries `3da1fdf4efbc` | — | merged post-v7.0; will appear in 7.1 on release |
+| 7.0.x | :x: Fix not yet backported | 7.0.10 | |
+| 6.18.x | :x: Fix not yet backported | 6.18.33 | |
+| 6.12.x | :x: Fix not yet backported | 6.12.91 | LTS 2028-12 |
+| 6.6.x  | :x: Fix not yet backported | 6.6.141 | LTS 2026-12 |
+| 6.1.x  | :x: Fix not yet backported | 6.1.174 | LTS 2026-12 |
+| 5.15.x | :x: Fix not yet backported | 5.15.208 | LTS 2026-12 |
+| 5.10.x | :x: Fix not yet backported | 5.10.257 | LTS 2026-12 |
 
 When verifying a kernel tree directly, the file is
 `fs/smb/client/cifs_spnego.c` on 6.7 and later, and
@@ -115,17 +117,17 @@ here and appear only as references where relevant.
 
 | Distribution | Release | Kernel | cifs-utils | Fixed since | Status |
 |---|---|---|---|---|---|
-| Debian | sid (unstable) | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| Debian | forky (testing) | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| Debian | 13 (trixie) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
-| Debian | 12 (bookworm) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
-| Debian | 11 (bullseye, LTS) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
+| Debian | sid (unstable) | unpatched (7.0.10-1) | 7.4 | — | :x: Vulnerable |
+| Debian | forky (testing) | unpatched (7.0.9-1) | 7.4 | — | :x: Vulnerable |
+| Debian | 13 (trixie) | unpatched (6.12.86-1) | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
+| Debian | 12 (bookworm) | unpatched (6.1.170-3) | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
+| Debian | 11 (bullseye, LTS) | unpatched (5.10.223-1) | 6.11 | — | :x: Vulnerable — cifs-utils 6.11 &lt; 6.14; primary exploit path absent, reduced exposure |
 | Proxmox VE | 9 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Proxmox VE | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| NixOS | `nixos-unstable` | :grey_question: | :grey_question: | — | :grey_question: Unverified — see notes |
-| NixOS | `nixos-unstable-small` | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| NixOS | `nixos-25.11` | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| NixOS | `nixos-25.11-small` | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| NixOS | `nixos-unstable` | 6.18.33 — unpatched | 7.5 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | `nixos-unstable-small` | 6.18.33 — unpatched | 7.5 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | `nixos-25.11` | 6.12.91 — unpatched | 7.4 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | `nixos-25.11-small` | 6.12.91 — unpatched | 7.4 | — | :x: Vulnerable — see NixOS notes |
 | Rocky Linux | 10 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Rocky Linux | 9 | unpatched | :grey_question: | — | :x: Vulnerable — SELinux may constrain the upcall; see notes |
 | Rocky Linux | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
@@ -142,6 +144,20 @@ wired as the `request-key` handler on hosts actually configured for
 CIFS/SMB mounts.  A row's kernel pin and cifs-utils version are determined
 per channel from the nixpkgs tree; `tracker.security.nixos.org` is a
 secondary signal only.
+
+Verified 2026-05-30 against the local nixpkgs clone:
+
+| Channel | Pinned revision | Default kernel | cifs-utils |
+|---|---|---|---|
+| `nixos-unstable` | `64c08a7ca051` | `linux_6_18` → 6.18.33 | 7.5 |
+| `nixos-unstable-small` | `3242faf14b76` | `linux_6_18` → 6.18.33 | 7.5 |
+| `nixos-25.11` | `25f538306313` | `linux_6_12` → 6.12.91 | 7.4 |
+| `nixos-25.11-small` | `0f749800cd5f` | `linux_6_12` → 6.12.91 | 7.4 |
+
+All channels ship cifs-utils ≥ 6.14 (reachability gate met) and none
+carry the kernel fix.  The full exploit chain is present only on hosts
+that actually configure CIFS/SMB mounts (which wires `cifs.upcall` as the
+`request-key` handler).
 
 ### Rocky Linux / RHEL family
 
@@ -255,12 +271,17 @@ kernel-side hole.
 
 - The kernel fix is Linus mainline commit `3da1fdf4efbc`, adding the
   `.vet_description = cifs_spnego_key_vet_description` hook in
-  `fs/smb/client/cifs_spnego.c`.  The first released mainline tag and the
-  per-branch stable backports have **not yet** been verified against the
-  local stable clone (`~/src/linux/stable`) — every stable-branch row
-  remains `:grey_question:` pending that check (look for backports of
-  `3da1fdf4efbc` on `fs/smb/client/cifs_spnego.c`, or the legacy
-  `fs/cifs/cifs_spnego.c` path on pre-6.7 branches).
+  `fs/smb/client/cifs_spnego.c`.  The fix was merged into Linus mainline
+  after v7.0 branched; it will first appear in a released kernel as v7.1.
+- **No CVE assigned** (2026-05-30): `git -C ~/src/linux/vulns grep -l
+  3da1fdf4efbc -- 'cve/published/*'` returns no matches.
+- **All stable branches unpatched** (verified 2026-05-30 against
+  `~/src/linux/stable`): grepped for `vet_description` /
+  `cifs_spnego_key_vet_description` on `fs/smb/client/cifs_spnego.c`
+  (7.0.y, 6.18.y, 6.12.y, 6.6.y, 6.1.y) and `fs/cifs/cifs_spnego.c`
+  (5.15.y, 5.10.y) — all returned empty.  Current point releases per
+  kernel.org finger_banner: 7.0.10, 6.18.33, 6.12.91, 6.6.141, 6.1.174,
+  5.15.208, 5.10.257.
 
 ### Distributions
 
@@ -271,9 +292,18 @@ kernel-side hole.
   9.7, Oracle Linux 9/8, CentOS Stream 9, SLES 15 SP7, openSUSE Leap
   15.6, Linux Mint 22.3/21.3, and Kali 2021.4+ as vulnerable; those are
   used as references only, not tracked as rows.
-- Current per-distro kernel and cifs-utils package versions, and any
-  shipped fixes, are pending verification against distro package metadata
-  and advisories.  NixOS rows are pending the local nixpkgs-clone lookup.
+- **Debian** (verified 2026-05-30 via `api.ftp-master.debian.org/madison`):
+  sid 7.0.10-1 / cifs-utils 7.4; forky 7.0.9-1 / cifs-utils 7.4; trixie
+  6.12.86-1 / cifs-utils 7.4; bookworm 6.1.170-3 / cifs-utils 7.0;
+  bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
+  absent, reduced exposure).  All kernels unpatched; Debian sid/forky
+  rows flipped to `:x:`.
+- **NixOS** (verified 2026-05-30 via local nixpkgs clone): all four
+  channels verified; see the NixOS notes table for channel revision, kernel
+  pin, and cifs-utils version.  All rows flipped from `:grey_question:` to
+  `:x: Vulnerable`.
+- **Proxmox VE 9/8**, **Rocky Linux 10/8**, and **Amazon Linux 2** remain
+  `:grey_question:` — kernel version not yet confirmed from distro repos.
 - No CVE-keyed feeds (NVD, EPSS, Red Hat JSON, CISA KEV) resolve yet —
   no CVE has been assigned.
 
