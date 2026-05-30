@@ -81,8 +81,7 @@ The effective lifetime of the bug is therefore roughly 19 years
 
 The fix is present in Linus mainline, merged after the v7.0 branch point
 — it will first appear in a stable release when v7.1 ships.  No stable
-branch has received the backport yet (verified 2026-05-30 against the
-local stable clone).
+branch has received the backport yet.
 
 | Branch | Status | Current | Notes |
 |---|---|---|---|
@@ -273,9 +272,9 @@ kernel-side hole.
   `.vet_description = cifs_spnego_key_vet_description` hook in
   `fs/smb/client/cifs_spnego.c`.  The fix was merged into Linus mainline
   after v7.0 branched; it will first appear in a released kernel as v7.1.
-- **No CVE assigned** (2026-05-30): `git -C ~/src/linux/vulns grep -l
+- **No CVE assigned**: `git -C ~/src/linux/vulns grep -l
   3da1fdf4efbc -- 'cve/published/*'` returns no matches.
-- **All stable branches unpatched** (verified 2026-05-30 against
+- **All stable branches unpatched** (checked against
   `~/src/linux/stable`): grepped for `vet_description` /
   `cifs_spnego_key_vet_description` on `fs/smb/client/cifs_spnego.c`
   (7.0.y, 6.18.y, 6.12.y, 6.6.y, 6.1.y) and `fs/cifs/cifs_spnego.c`
@@ -292,13 +291,13 @@ kernel-side hole.
   9.7, Oracle Linux 9/8, CentOS Stream 9, SLES 15 SP7, openSUSE Leap
   15.6, Linux Mint 22.3/21.3, and Kali 2021.4+ as vulnerable; those are
   used as references only, not tracked as rows.
-- **Debian** (verified 2026-05-30 via `api.ftp-master.debian.org/madison`):
+- **Debian** (via `api.ftp-master.debian.org/madison`):
   sid 7.0.10-1 / cifs-utils 7.4; forky 7.0.9-1 / cifs-utils 7.4; trixie
   6.12.86-1 / cifs-utils 7.4; bookworm 6.1.170-3 / cifs-utils 7.0;
   bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
   absent, reduced exposure).  All kernels unpatched; Debian sid/forky
   rows flipped to `:x:`.
-- **NixOS** (verified 2026-05-30 via local nixpkgs clone): all four
+- **NixOS** (via local nixpkgs clone): all four
   channels verified; see the NixOS notes table for channel revision, kernel
   pin, and cifs-utils version.  All rows flipped from `:grey_question:` to
   `:x: Vulnerable`.

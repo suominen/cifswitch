@@ -130,6 +130,13 @@ rather than appending a line per re-check.  Bump the
 is also where auto-update-agent-relevant detail belongs — keep such
 mechanics out of the tracker body.
 
+The verified-date lives **only** in the `*Last verified <date>.*` header.
+Do not repeat it inline — not in the tracker body, and not per bullet in
+the log (no `(verified <date> …)`, no bare `(<date>)`).  Every entry in
+the log is already "as of" that header date.  Method/source attribution
+*without* a date is fine and useful (e.g. `(via …/madison)`,
+`(checked against ~/src/linux/stable)`).
+
 ### Date handling — first-seen / last-changed, not "today"
 
 Dates embedded in the prose (front-matter `lastmod`, the verification log
