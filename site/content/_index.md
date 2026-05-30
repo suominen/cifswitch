@@ -115,6 +115,8 @@ here and appear only as references where relevant.
 
 | Distribution | Release | Kernel | cifs-utils | Fixed since | Status |
 |---|---|---|---|---|---|
+| Debian | sid (unstable) | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| Debian | forky (testing) | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Debian | 13 (trixie) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
 | Debian | 12 (bookworm) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
 | Debian | 11 (bullseye, LTS) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
@@ -255,8 +257,8 @@ kernel-side hole.
 
 ### Distributions
 
-- Tracked rows: Debian 11/12/13, Rocky Linux 8/9/10, Amazon Linux 2023
-  and 2, NixOS (unstable / 25.11), Proxmox VE 8/9.  The disclosure
+- Tracked rows: Debian sid / forky / 13 / 12 / 11, Rocky Linux 8/9/10,
+  Amazon Linux 2023 and 2, NixOS (unstable / 25.11), Proxmox VE 8/9.  The disclosure
   writeup (2026-05-27) also reported Ubuntu 18.04/20.04/22.04, AlmaLinux
   9.7, Oracle Linux 8/9, CentOS Stream 9, SLES 15 SP7, openSUSE Leap
   15.6, Linux Mint 21.3/22.3, and Kali 2021.4+ as vulnerable; those are
