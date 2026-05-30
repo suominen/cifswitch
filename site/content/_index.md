@@ -126,15 +126,15 @@ here and appear only as references where relevant.
 | Amazon Linux | 2023 | unpatched | :grey_question: | — | :x: Vulnerable |
 | Amazon Linux | 2 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | NixOS | unstable / 25.11 | :grey_question: | :grey_question: | — | :grey_question: Unverified — see notes |
-| Proxmox VE | 8 / 9 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| Proxmox VE | 9 / 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 
 ### Rocky Linux / RHEL family
 
-The table tracks **Rocky Linux** (8 / 9 / 10).  **RHEL** and **AlmaLinux**
+The table tracks **Rocky Linux** (10 / 9 / 8).  **RHEL** and **AlmaLinux**
 are not tracked as separate rows — Rocky rebuilds RHEL, and AlmaLinux
 usually ships the same fix ahead of Rocky in its `testing` repo, so both
-serve as references / leading indicators for the Rocky kernel (`4.18.x`
-on 8, `5.14.x` on 9, `6.12.x` on 10).
+serve as references / leading indicators for the Rocky kernel (`6.12.x`
+on 10, `5.14.x` on 9, `4.18.x` on 8).
 
 On the EL family `cifs` is a loadable module and SELinux is enforcing by
 default, which may constrain `cifs.upcall`'s ability to load an arbitrary
@@ -257,11 +257,11 @@ kernel-side hole.
 
 ### Distributions
 
-- Tracked rows: Debian sid / forky / 13 / 12 / 11, Rocky Linux 8/9/10,
-  Amazon Linux 2023 and 2, NixOS (unstable / 25.11), Proxmox VE 8/9.  The disclosure
-  writeup (2026-05-27) also reported Ubuntu 18.04/20.04/22.04, AlmaLinux
-  9.7, Oracle Linux 8/9, CentOS Stream 9, SLES 15 SP7, openSUSE Leap
-  15.6, Linux Mint 21.3/22.3, and Kali 2021.4+ as vulnerable; those are
+- Tracked rows: Debian sid / forky / 13 / 12 / 11, Rocky Linux 10/9/8,
+  Amazon Linux 2023 and 2, NixOS (unstable / 25.11), Proxmox VE 9/8.  The disclosure
+  writeup (2026-05-27) also reported Ubuntu 22.04/20.04/18.04, AlmaLinux
+  9.7, Oracle Linux 9/8, CentOS Stream 9, SLES 15 SP7, openSUSE Leap
+  15.6, Linux Mint 22.3/21.3, and Kali 2021.4+ as vulnerable; those are
   used as references only, not tracked as rows.
 - Current per-distro kernel and cifs-utils package versions, and any
   shipped fixes, are pending verification against distro package metadata
