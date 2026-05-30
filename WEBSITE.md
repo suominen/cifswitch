@@ -74,20 +74,21 @@ The Hugo skeleton, theme integration, PaperMod overrides, CSS, and i18n
 were copied wholesale from the pintheft tracker.  Only `baseURL`,
 `title`, the Go module path, and the rsync destination were retargeted.
 
-### 2. Publish — pending
+### 2. Publish — done
 
-- [ ] First `make build` and inspect `site/public/` locally.
-- [ ] First `make dist` to push to `haig` — `htdocs/cifswitch/` created
+- [x] First `make build` and inspect `site/public/` locally.
+- [x] First `make dist` to push to `haig` — `htdocs/cifswitch/` created
       (let rsync make it).
-- [ ] Verify the site renders at `https://kimmo.cloud/cifswitch/`,
+- [x] Verify the site renders at `https://kimmo.cloud/cifswitch/`,
       including the RSS feed and OG metadata.
 
-### 3. Automated maintenance — pending one-time setup
+### 3. Automated maintenance — done
 
-- [ ] `git worktree add -b auto-update ~/src/auto-update/cifswitch main`
-- [ ] Install and enable
+- [x] `git worktree add -b auto-update ~/src/auto-update/cifswitch main`
+- [x] Install and enable
       `systemd/cifswitch-tracker-update.{service,timer}` as user units
       (see CLAUDE.md for the exact `ln -sr` + `systemctl --user` recipe).
+      Enabled 2026-05-30; runs twice daily at 05:37/17:37.
 
 ## Decisions
 
