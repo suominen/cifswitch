@@ -126,7 +126,8 @@ here and appear only as references where relevant.
 | Amazon Linux | 2023 | unpatched | :grey_question: | — | :x: Vulnerable |
 | Amazon Linux | 2 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | NixOS | unstable / 25.11 | :grey_question: | :grey_question: | — | :grey_question: Unverified — see notes |
-| Proxmox VE | 9 / 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| Proxmox VE | 9 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| Proxmox VE | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 
 ### Rocky Linux / RHEL family
 
