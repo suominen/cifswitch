@@ -123,10 +123,10 @@ here and appear only as references where relevant.
 | Debian | 11 (bullseye, LTS) | 5.10.223-1 | 6.11 | — | :x: Vulnerable — cifs-utils 6.11 &lt; 6.14; primary exploit path absent, reduced exposure |
 | Proxmox VE | 9 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Proxmox VE | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| NixOS | Unstable | 6.18.33 | 7.5 | — | :x: Vulnerable — see NixOS notes |
-| NixOS | Unstable (small) | 6.18.33 | 7.5 | — | :x: Vulnerable — see NixOS notes |
-| NixOS | 25.11 | 6.12.91 | 7.4 | — | :x: Vulnerable — see NixOS notes |
-| NixOS | 25.11 (small) | 6.12.91 | 7.4 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | Unstable | 7.0.10 | 7.5 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | Unstable (small) | 7.0.10 | 7.5 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | 25.11 | 7.0.10 | 7.4 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | 25.11 (small) | 7.0.10 | 7.4 | — | :x: Vulnerable — see NixOS notes |
 | Rocky Linux | 10 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Rocky Linux | 9 | :grey_question: | :grey_question: | — | :x: Vulnerable — SELinux may constrain the upcall; see notes |
 | Rocky Linux | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
@@ -274,9 +274,15 @@ kernel-side hole.
   bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
   absent, reduced exposure).  All kernels unpatched; Debian sid/forky
   rows flipped to `:x:`.
-- **NixOS** (via local nixpkgs clone): all four channels verified —
-  unpatched kernels, cifs-utils ≥ 6.14; all rows flipped from
-  `:grey_question:` to `:x: Vulnerable`.
+- **NixOS** (via local nixpkgs clone): all four channels verified.
+  `pkgs/top-level/linux-kernels.nix` now aliases `linux_latest` to
+  `packages.linux_7_0` in all four channel revisions (unstable
+  `64c08a7c`, unstable-small `3242faf1`, 25.11 `25f53830`, 25.11-small
+  `0f749800`); default kernel bumped to 7.0.10 across all rows
+  (previously 6.18.33 for unstable channels, 6.12.91 for 25.11
+  channels).  cifs-utils unchanged (unstable: 7.5, 25.11: 7.4).
+  7.0.x carries no backport of `3da1fdf4efbc`; all four rows remain
+  `:x: Vulnerable`.
 - **Proxmox VE 9/8**, **Rocky Linux 10/8**, and **Amazon Linux 2** remain
   `:grey_question:` — kernel version not yet confirmed from distro repos.
 - No CVE-keyed feeds (NVD, EPSS, Red Hat JSON, CISA KEV) resolve yet —
