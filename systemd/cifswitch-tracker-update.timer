@@ -2,9 +2,9 @@
 Description=Run CIFSwitch tracker update twice daily
 
 [Timer]
-OnCalendar=*-*-* 05,17:37:00
+OnCalendar=*-*-* 05,17:35:00
 Persistent=true
-RandomizedDelaySec=5m
+RandomizedDelaySec=2m
 
 [Install]
 WantedBy=timers.target
