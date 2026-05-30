@@ -122,10 +122,10 @@ tracked here and appear only as references where relevant.
 | Debian | 11 (bullseye, LTS) | 5.10.223-1 | 6.11 | — | :x: Vulnerable — cifs-utils 6.11 &lt; 6.14; primary exploit path absent, reduced exposure |
 | Proxmox VE | 9 | 7.0.6-2-pve | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
 | Proxmox VE | 8 | 6.8.12-28-pve | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
-| NixOS | Unstable | 6.18.33 | 7.5 | — | :x: Vulnerable — see NixOS notes |
-| NixOS | Unstable (small) | 6.18.33 | 7.5 | — | :x: Vulnerable — see NixOS notes |
-| NixOS | 25.11 | 6.12.91 | 7.4 | — | :x: Vulnerable — see NixOS notes |
-| NixOS | 25.11 (small) | 6.12.91 | 7.4 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | Unstable | 7.0.10 | 7.5 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | Unstable (small) | 7.0.10 | 7.5 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | 25.11 | 7.0.10 | 7.4 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | 25.11 (small) | 7.0.10 | 7.4 | — | :x: Vulnerable — see NixOS notes |
 | Rocky Linux | 10 | 6.12.0-211.16.1.el10_2 | 7.5 | — | :x: Vulnerable — see Rocky notes |
 | Rocky Linux | 9 | 5.14.0-687.10.1.el9_8 | 7.5 | — | :x: Vulnerable — see Rocky notes |
 | Rocky Linux | 8 | 4.18.0-553.125.1.el8_10 | 7.0 | — | :x: Vulnerable — see Rocky notes |
@@ -384,9 +384,15 @@ until a patched kernel is installed.
   bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
   absent, reduced exposure).  All kernels unpatched; Debian sid/forky
   rows flipped to `:x:`.
-- **NixOS** (via local nixpkgs clone): all four channels verified —
-  unpatched kernels, cifs-utils ≥ 6.14; all rows flipped from
-  `:grey_question:` to `:x: Vulnerable`.
+- **NixOS** (via local nixpkgs clone): all four channels verified.
+  `pkgs/top-level/linux-kernels.nix` now aliases `linux_latest` to
+  `packages.linux_7_0` in all four channel revisions (unstable
+  `64c08a7c`, unstable-small `3242faf1`, 25.11 `25f53830`, 25.11-small
+  `0f749800`); default kernel bumped to 7.0.10 across all rows
+  (previously 6.18.33 for unstable channels, 6.12.91 for 25.11
+  channels).  cifs-utils unchanged (unstable: 7.5, 25.11: 7.4).
+  7.0.x carries no backport of `3da1fdf4efbc`; all four rows remain
+  `:x: Vulnerable`.
 - **Proxmox VE** (via the `pve-no-subscription` `Packages` index): VE 9
   default kernel `proxmox-kernel-7.0` (newest image 7.0.6-2-pve), VE 8
   default `proxmox-kernel-6.8` (newest 6.8.12-28-pve); both unpatched.
