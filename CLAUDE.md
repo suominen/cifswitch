@@ -95,6 +95,13 @@ the LSM (SELinux/AppArmor) posture modulate real-world exploitability and
 belong in the *Status* note or a per-distro `###` section — they do not
 by themselves earn a fixed verdict.
 
+The combined distribution-status table is the **single source** for each
+row's kernel, cifs-utils, *Fixed since*, and status.  A per-distro `###`
+section is for notes that do not fit the table (LSM posture, reachability
+caveats, reference distros, channel structure).  Do **not** restate the
+table's columns there or add a parallel per-release table that duplicates
+them — put a newly verified version/status in the table row itself.
+
 ## Conventions for status entries
 
 - `:white_check_mark:` — the release's kernel carries the

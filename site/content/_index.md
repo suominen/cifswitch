@@ -140,23 +140,7 @@ a faster, server-oriented `-small` subset that usually leads it by a
 point release; all four are tracked.  NixOS enables unprivileged user
 namespaces by default, but `cifs.upcall` (cifs-utils) is only present and
 wired as the `request-key` handler on hosts actually configured for
-CIFS/SMB mounts.  A row's kernel pin and cifs-utils version are determined
-per channel from the nixpkgs tree; `tracker.security.nixos.org` is a
-secondary signal only.
-
-Verified 2026-05-30 against the local nixpkgs clone:
-
-| Channel | Pinned revision | Default kernel | cifs-utils |
-|---|---|---|---|
-| `nixos-unstable` | `64c08a7ca051` | `linux_6_18` → 6.18.33 | 7.5 |
-| `nixos-unstable-small` | `3242faf14b76` | `linux_6_18` → 6.18.33 | 7.5 |
-| `nixos-25.11` | `25f538306313` | `linux_6_12` → 6.12.91 | 7.4 |
-| `nixos-25.11-small` | `0f749800cd5f` | `linux_6_12` → 6.12.91 | 7.4 |
-
-All channels ship cifs-utils ≥ 6.14 (reachability gate met) and none
-carry the kernel fix.  The full exploit chain is present only on hosts
-that actually configure CIFS/SMB mounts (which wires `cifs.upcall` as the
-`request-key` handler).
+CIFS/SMB mounts — so the full chain applies only to those hosts.
 
 ### Rocky Linux / RHEL family
 
@@ -297,10 +281,9 @@ kernel-side hole.
   bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
   absent, reduced exposure).  All kernels unpatched; Debian sid/forky
   rows flipped to `:x:`.
-- **NixOS** (via local nixpkgs clone): all four
-  channels verified; see the NixOS notes table for channel revision, kernel
-  pin, and cifs-utils version.  All rows flipped from `:grey_question:` to
-  `:x: Vulnerable`.
+- **NixOS** (via local nixpkgs clone): all four channels verified —
+  unpatched kernels, cifs-utils ≥ 6.14; all rows flipped from
+  `:grey_question:` to `:x: Vulnerable`.
 - **Proxmox VE 9/8**, **Rocky Linux 10/8**, and **Amazon Linux 2** remain
   `:grey_question:` — kernel version not yet confirmed from distro repos.
 - No CVE-keyed feeds (NVD, EPSS, Red Hat JSON, CISA KEV) resolve yet —
