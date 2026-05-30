@@ -169,6 +169,30 @@ Whether the module is available to load at all:
 modinfo cifs >/dev/null 2>&1 && echo "cifs available" || echo "cifs not present"
 ```
 
+**Is `cifs` a loadable module or built in?**  This decides whether the
+module-blocking mitigation can work.  Inspect the kernel config:
+
+```bash
+grep -E 'CONFIG_CIFS\b' /boot/config-$(uname -r)
+```
+
+Interpret the result:
+
+- `CONFIG_CIFS=m` → loadable module — the modprobe block and `rmmod`
+  work.  Every mainstream distro (Debian, Proxmox, NixOS, Rocky, Amazon)
+  ships it this way.
+- `CONFIG_CIFS=y` → built in — the module cannot be unloaded and the
+  modprobe block will not help; disable unprivileged user namespaces
+  instead until a patched kernel is installed.
+- `# CONFIG_CIFS is not set` → not built — the CIFS client is absent, so
+  this chain is not reachable.
+
+Fallback if `/boot/config-*` is unreadable and `CONFIG_IKCONFIG_PROC=y`:
+
+```bash
+zgrep -E 'CONFIG_CIFS\b' /proc/config.gz
+```
+
 **Which cifs-utils is installed?**  (≥ 6.14 is the reachability gate.)
 The helper reports its own version, e.g. `mount.cifs version: 7.0`:
 
@@ -214,9 +238,14 @@ system you are not authorised to test.
 
 ## Mitigation
 
-The real fix is the kernel patch.  Until a fixed kernel is installed, the
-most reliable interim mitigation is to remove the attacker's ability to
-build the fake namespace by **disabling unprivileged user namespaces**.
+The real fix is the kernel patch.  Until a fixed kernel is installed, two
+interim measures each break the chain on their own — disabling
+unprivileged user namespaces (removes the attacker's ability to build the
+fake namespace) and blocking the `cifs` module (removes the upcall
+surface).
+
+### Disable unprivileged user namespaces
+
 On Debian/Ubuntu:
 
 ```bash
@@ -240,19 +269,30 @@ default:
 sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
 ```
 
+### Block the cifs module (when it is a loadable module)
+
 If CIFS/SMB client mounts are not needed, blocking the `cifs` module
-removes the upcall surface entirely.  A bare `blacklist cifs` only
-suppresses alias-based autoload — the module still loads on an explicit
-`mount -t cifs`, so use an `install` override to block it outright:
+removes the upcall surface entirely.  This works only when `cifs` is a
+loadable module (`CONFIG_CIFS=m`, the universal distro default — see
+*Detection*); a built-in `cifs` cannot be unloaded or blocked this way.
+A bare `blacklist cifs` only suppresses alias-based autoload — the module
+still loads on an explicit `mount -t cifs`, so use an `install` override
+to block it outright:
 
 ```bash
-echo 'install cifs /bin/false' | sudo tee /etc/modprobe.d/blacklist-cifs.conf
+echo 'install cifs /bin/false' | sudo tee /etc/modprobe.d/cifswitch.conf
 ```
 
 Then unload it if it is currently loaded (unmount any CIFS shares first):
 
 ```bash
-sudo modprobe -r cifs
+sudo rmmod cifs
+```
+
+Verify it is gone and stays blocked:
+
+```bash
+lsmod | grep '^cifs ' && echo "STILL LOADED" || echo "Not loaded"
 ```
 
 Not installing (or removing) cifs-utils drops the root `cifs.upcall`
@@ -260,6 +300,39 @@ helper as well.  **Downgrading cifs-utils below 6.14 is not a reliable
 mitigation** — the disclosure notes some older backported versions are
 also affected, and it sacrifices functionality without closing the
 kernel-side hole.
+
+### NixOS
+
+NixOS manages `/etc/modprobe.d` declaratively — set the option below
+rather than editing those files (they are regenerated on every rebuild),
+then run `nixos-rebuild switch`.  It is an ordinary NixOS option: it
+belongs in `configuration.nix`, or — with a flake — in any module
+imported by the host's `nixosConfigurations.<host>` entry.
+
+Block the `cifs` module — this text is appended to
+`/etc/modprobe.d/nixos.conf`:
+
+```nix
+boot.extraModprobeConfig = ''
+  install cifs /bin/false
+'';
+```
+
+Disabling unprivileged user namespaces is the alternative lever:
+
+```nix
+boot.kernel.sysctl."user.max_user_namespaces" = 0;
+```
+
+Neither option unloads a module that is *already* loaded — reboot, or run
+`rmmod cifs`, to clear a live one.
+
+### Built-in cifs (`CONFIG_CIFS=y`)
+
+If `cifs` is compiled in rather than modular, neither `rmmod` nor the
+modprobe block help.  No mainstream distribution builds the CIFS client
+in; if a custom kernel does, disable unprivileged user namespaces (above)
+until a patched kernel is installed.
 
 ## Risk notes
 
