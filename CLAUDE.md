@@ -430,8 +430,12 @@ version, not just the kernel:
 - **Proxmox VE:** no cifs-utils in the Proxmox repo — it is the Debian
   base version (VE 9 ⇒ trixie, VE 8 ⇒ bookworm), so reuse the Debian
   madison rows above.
-- **EL family / SUSE / Amazon:** the cifs-utils RPM version in the
-  distro's package metadata or advisory text.
+- **EL family / SUSE / Amazon:** the cifs-utils RPM version straight from
+  repodata — `repomd.xml` → `*-primary.xml.gz`, the same index used for
+  the kernel (see "Rocky / Amazon kernel + cifs-utils version source"
+  above): Rocky in BaseOS (`dl.rockylinux.org/pub/rocky/<v>/BaseOS/x86_64/os`),
+  Amazon via the resolved core mirror.  Advisory text is a fallback when
+  repodata is unavailable.
 - **Upstream:** <https://git.samba.org/?p=cifs-utils.git;a=summary> for
   the current release and any hardening of `cifs.upcall` itself.
 
