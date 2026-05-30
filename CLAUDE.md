@@ -239,6 +239,9 @@ history via a long-living local clone under `~/src/linux/`:
 | `~/src/linux/stable` | `https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git` |
 | `~/src/linux/vulns`  | `https://git.kernel.org/pub/scm/linux/security/vulns.git`          |
 
+`vulns` is not a kernel-history clone — it is the kernel CNA's CVE
+database (one record per assigned CVE).  See "Discovering the CVE" below.
+
 One-time setup (full stable clone — kernel.org's git server does not
 honour `--filter=blob:none`):
 
@@ -265,23 +268,47 @@ The legacy `fs/cifs/cifs_spnego.c` path applies to branches older than
 6.7.  The git smart-HTTP protocol is not Anubis-gated, so `git fetch` /
 `git ls-remote` work from any UA.
 
-`~/src/linux/vulns` is the kernel CVE database (the same data behind
-kernel.org's CVE announcements).  It is **unused until a CVE is assigned**
-to CIFSwitch — at that point it is the canonical source for the
-CVE → fix-commit mapping and the per-branch introduced/fixed version
-pairs that populate the *Upstream fixed versions* table.  Records live at
-`cve/published/<year>/CVE-YYYY-NNNNN.{json,mbox,dyad}`; the `.dyad` file
-lists each `<introduced>:<fixed>` commit pair per affected branch.  Look
-up an assigned CVE with:
+## Discovering the CVE
+
+CIFSwitch has no CVE yet — the tracker uses the placeholder
+`CVE-2026-XXXXX`.  The CVE-keyed feeds (NVD, MITRE, Red Hat, EPSS, KEV)
+cannot *find* the assignment; they only become useful once the ID is
+known.
+
+The deterministic discovery path is the Linux kernel CNA's `vulns.git`
+(the kernel has been its own CNA since Feb 2024).  Records move through
+two stages, and the directory says which:
+
+- `cve/review/proposed/<release>-<reviewer>` — a candidate the CNA's
+  dredge has flagged but **not yet assigned**.  No CVE ID.
+- `cve/published/<year>/CVE-YYYY-NNNNN{,.json,.mbox,.dyad}` — an
+  **assigned** CVE.  The filename is the ID.
+
+Both stages reference the *fixing commit SHA*, and the CIFSwitch fix
+commit is known, so discovery is a grep — no keyword guessing.  The
+authoritative "a CVE exists" check scopes to `cve/published/`:
 
 ```
-git -C ~/src/linux/vulns show \
-  HEAD:cve/published/2026/CVE-2026-NNNNN.dyad
+git -C ~/src/linux/vulns fetch --quiet origin
 git -C ~/src/linux/vulns grep -l 3da1fdf4efbc -- 'cve/published/*'
 ```
 
-The wrapper refreshes this clone on every run so the lookup is fresh the
-moment a CVE lands; inspect it via `HEAD` (it tracks a single branch).
+When that matches, the matching filename *is* the CVE ID.  At that point:
+
+1. Replace `CVE-2026-XXXXX` throughout `site/content/_index.md` (and any
+   CVE-keyed URLs in `CLAUDE.md`) with the real ID, and add the
+   CVE-keyed feeds.
+2. Read the record's `.dyad` for the per-branch `<introduced>:<fixed>`
+   versions — authoritative for the *Upstream fixed versions* table:
+   `git -C ~/src/linux/vulns show HEAD:cve/published/<year>/CVE-….dyad`.
+3. See `WEBSITE.md` for the repo / site-path rename to the CVE ID.
+
+The wrapper refreshes `vulns` every run, so this works the moment a CVE
+lands; inspect via `HEAD` (it tracks a single branch).  Smart-HTTP
+`git fetch` is not Anubis-gated.  Secondary, fuzzier signals only: the
+disclosure writeup / oss-security, or an NVD keyword search — note that a
+non-kernel-CNA assignment (MITRE or a distro) may surface there without a
+matching `vulns.git` record.
 
 ## Local nixpkgs clone for NixOS channel verification
 

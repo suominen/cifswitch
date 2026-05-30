@@ -55,17 +55,21 @@ relying on anything cached here.
       to branches older than 6.7. Record the first fixed point release
       per branch.
 
-   b. Once a CVE is assigned, switch the placeholder CVE-2026-XXXXX
-      throughout the tracker to the real ID and add the CVE-keyed feeds
-      (NVD, MITRE CVE Awg JSON, Red Hat JSON, FIRST EPSS, CISA KEV).
-      Watch the writeup / oss-security for the assignment. Then use the
-      local kernel CVE database (refreshed by the wrapper) as the
-      canonical CVE -> fix-commit / fixed-version source:
+   b. CVE discovery — the deterministic signal is the kernel CNA's vulns
+      database, NOT the writeup/oss-security/NVD (those cannot find an
+      assignment, only confirm a known ID). Grep the published records
+      for the fix commit — the matching filename IS the CVE ID:
         git -C ~/src/linux/vulns grep -l 3da1fdf4efbc -- 'cve/published/*'
+      If it matches, switch the placeholder CVE-2026-XXXXX throughout the
+      tracker to that ID, add the CVE-keyed feeds (NVD, MITRE CVE Awg
+      JSON, Red Hat JSON, FIRST EPSS, CISA KEV), and read the record's
+      .dyad for the per-branch <introduced>:<fixed> versions
+      (authoritative for the *Upstream fixed versions* table):
         git -C ~/src/linux/vulns show HEAD:cve/published/2026/CVE-2026-NNNNN.dyad
-      The .dyad file lists each <introduced>:<fixed> commit pair per
-      affected branch — cross-check it against the *Upstream fixed
-      versions* table.
+      See "Discovering the CVE" in CLAUDE.md for the review/proposed ->
+      published staging. Secondary signals only: the disclosure writeup /
+      oss-security, or an NVD keyword search (a non-kernel-CNA assignment
+      may appear there without a vulns record).
 
 3. Two axes per distro row — verify BOTH:
 
