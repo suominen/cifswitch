@@ -106,48 +106,41 @@ namespace-switching `cifs.upcall`), tempered by whether unprivileged user
 namespaces and the LSM policy actually allow the upcall path.  *Fixed
 since* records the date the kernel fix first lands in that release.
 
-The rows below are seeded from the disclosure writeup's tested-vulnerable
-list (2026-05-27); current per-distro kernel and cifs-utils package
-versions, and any shipped fixes, are being verified — unconfirmed cells
-are marked :grey_question:.
+The rows below track a focused set of distributions; current per-distro
+kernel and cifs-utils package versions, and any shipped fixes, are being
+verified — unconfirmed cells are marked :grey_question:.  Other systems
+the disclosure writeup (2026-05-27) reported vulnerable — Ubuntu,
+AlmaLinux, Oracle Linux, openSUSE / SLES, Fedora, Arch — are not tracked
+here and appear only as references where relevant.
 
 | Distribution | Release | Kernel | cifs-utils | Fixed since | Status |
 |---|---|---|---|---|---|
 | Debian | 13 (trixie) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
 | Debian | 12 (bookworm) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
 | Debian | 11 (bullseye, LTS) | unpatched | :grey_question: | — | :x: Vulnerable — no fixed kernel yet |
-| Ubuntu | 24.04 LTS (noble) | unpatched | :grey_question: | — | :warning: AppArmor restricts unprivileged userns by default — see notes |
-| Ubuntu | 22.04 LTS (jammy) | unpatched | :grey_question: | — | :x: Vulnerable |
-| Ubuntu | 20.04 LTS (focal) | unpatched | :grey_question: | — | :x: Vulnerable |
-| Rocky Linux / RHEL | 9 | unpatched | :grey_question: | — | :x: Vulnerable — SELinux may constrain the upcall; see notes |
-| Rocky Linux / RHEL | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| AlmaLinux | 9.7 | unpatched | :grey_question: | — | :x: Vulnerable |
-| Oracle Linux | 8 / 9 | unpatched | :grey_question: | — | :x: Vulnerable |
+| Rocky Linux | 10 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| Rocky Linux | 9 | unpatched | :grey_question: | — | :x: Vulnerable — SELinux may constrain the upcall; see notes |
+| Rocky Linux | 8 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | Amazon Linux | 2023 | unpatched | :grey_question: | — | :x: Vulnerable |
-| openSUSE Leap | 15.6 | unpatched | :grey_question: | — | :x: Vulnerable |
-| SUSE Linux Enterprise | 15 SP7 | unpatched | :grey_question: | — | :x: Vulnerable |
-| Fedora | 41 / 42 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
-| Arch Linux | rolling | :grey_question: | :grey_question: | — | :grey_question: Unverified |
+| Amazon Linux | 2 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 | NixOS | unstable / 25.11 | :grey_question: | :grey_question: | — | :grey_question: Unverified — see notes |
 | Proxmox VE | 8 / 9 | :grey_question: | :grey_question: | — | :grey_question: Unverified |
 
-### Ubuntu
-
-Ubuntu 24.04 LTS (and later) enable the AppArmor
-`kernel.apparmor_restrict_unprivileged_userns` restriction by default,
-which blocks the unprivileged user-namespace creation the exploit relies
-on to build its fake mount namespace.  That closes the default path on
-24.04+; 22.04 and earlier do not ship the restriction and remain exposed
-on a vulnerable kernel.  `cifs` is a loadable module on all Ubuntu
-kernels.
-
 ### Rocky Linux / RHEL family
+
+The table tracks **Rocky Linux** (8 / 9 / 10).  **RHEL** and **AlmaLinux**
+are not tracked as separate rows — Rocky rebuilds RHEL, and AlmaLinux
+usually ships the same fix ahead of Rocky in its `testing` repo, so both
+serve as references / leading indicators for the Rocky kernel (`4.18.x`
+on 8, `5.14.x` on 9, `6.12.x` on 10).
 
 On the EL family `cifs` is a loadable module and SELinux is enforcing by
 default, which may constrain `cifs.upcall`'s ability to load an arbitrary
 NSS module — confirm against the actual policy before treating a release
-as not exploitable.  Rocky and AlmaLinux track Red Hat's schedule; once a
-CVE is assigned, RLSAs and ALSAs will follow the corresponding RHSA.
+as not exploitable.  The shipped `cifs-utils` version is the other gate:
+older EL releases may predate the 6.14 namespace-switch upcall.  Once a
+CVE is assigned, RLSAs (and the matching RHSA / ALSA references) carry the
+fixed kernel.
 
 ### NixOS
 
@@ -262,10 +255,12 @@ kernel-side hole.
 
 ### Distributions
 
-- Rows are seeded from the disclosure writeup's tested-vulnerable list
-  (2026-05-27): Debian 11/12/13, Ubuntu 18.04/20.04/22.04, Rocky 9,
-  AlmaLinux 9.7, Oracle Linux 8/9, CentOS Stream 9, Amazon Linux 2023,
-  SLES 15 SP7, openSUSE Leap 15.6, Linux Mint 21.3/22.3, Kali 2021.4+.
+- Tracked rows: Debian 11/12/13, Rocky Linux 8/9/10, Amazon Linux 2023
+  and 2, NixOS (unstable / 25.11), Proxmox VE 8/9.  The disclosure
+  writeup (2026-05-27) also reported Ubuntu 18.04/20.04/22.04, AlmaLinux
+  9.7, Oracle Linux 8/9, CentOS Stream 9, SLES 15 SP7, openSUSE Leap
+  15.6, Linux Mint 21.3/22.3, and Kali 2021.4+ as vulnerable; those are
+  used as references only, not tracked as rows.
 - Current per-distro kernel and cifs-utils package versions, and any
   shipped fixes, are pending verification against distro package metadata
   and advisories.  NixOS rows are pending the local nixpkgs-clone lookup.
