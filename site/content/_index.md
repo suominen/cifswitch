@@ -3,7 +3,7 @@ title: "CIFSwitch — CIFS cifs.spnego key-origin LPE tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-05-30
+lastmod: 2026-05-31
 cover:
   image: "cifswitch-tracker.png"
   alt: "CIFSwitch — CIFS cifs.spnego key-origin LPE tracker"
@@ -127,8 +127,8 @@ tracked here and appear only as references where relevant.
 | NixOS | 25.11 | 7.0.10 | 7.4 | — | :x: Vulnerable — see NixOS notes |
 | NixOS | 25.11 (small) | 7.0.10 | 7.4 | — | :x: Vulnerable — see NixOS notes |
 | Rocky Linux | 10 | 6.12.0-211.16.1.el10_2 | 7.5 | — | :x: Vulnerable — see Rocky notes |
-| Rocky Linux | 9 | 5.14.0-687.10.1.el9_8 | 7.5 | — | :x: Vulnerable — see Rocky notes |
-| Rocky Linux | 8 | 4.18.0-553.125.1.el8_10 | 7.0 | — | :x: Vulnerable — see Rocky notes |
+| Rocky Linux | 9 | 5.14.0-687.12.1.el9_8 | 7.5 | — | :x: Vulnerable — see Rocky notes |
+| Rocky Linux | 8 | 4.18.0-553.126.1.el8_10 | 7.0 | — | :x: Vulnerable — see Rocky notes |
 | Amazon Linux | 2023 | 6.1.172-216.329.amzn2023 | 7.5 | — | :x: Vulnerable |
 | Amazon Linux | 2 | 4.14.355-282.729.amzn2 | 6.2 | — | :x: Vulnerable — cifs-utils 6.2 &lt; 6.14; primary exploit path absent, reduced exposure |
 {.distros}
@@ -351,7 +351,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-05-30.*
+*Last verified 2026-05-31.*
 
 ### Upstream
 
@@ -362,12 +362,11 @@ until a patched kernel is installed.
 - **No CVE assigned**: `git -C ~/src/linux/vulns grep -l
   3da1fdf4efbc -- 'cve/published/*'` returns no matches.
 - **All stable branches unpatched** (checked against
-  `~/src/linux/stable`): grepped for `vet_description` /
-  `cifs_spnego_key_vet_description` on `fs/smb/client/cifs_spnego.c`
+  `~/src/linux/stable`): `git log` on `fs/smb/client/cifs_spnego.c`
   (7.0.y, 6.18.y, 6.12.y, 6.6.y, 6.1.y) and `fs/cifs/cifs_spnego.c`
-  (5.15.y, 5.10.y) — all returned empty.  Current point releases per
-  kernel.org finger_banner: 7.0.10, 6.18.33, 6.12.91, 6.6.141, 6.1.174,
-  5.15.208, 5.10.257.
+  (5.15.y, 5.10.y) — no `vet_description` backport in any branch.
+  Current point releases per kernel.org finger_banner: 7.0.10, 6.18.33,
+  6.12.91, 6.6.141, 6.1.174, 5.15.208, 5.10.257 (unchanged).
 
 ### Distributions
 
@@ -385,14 +384,12 @@ until a patched kernel is installed.
   absent, reduced exposure).  All kernels unpatched; Debian sid/forky
   rows flipped to `:x:`.
 - **NixOS** (via local nixpkgs clone): all four channels verified.
-  `pkgs/top-level/linux-kernels.nix` now aliases `linux_latest` to
-  `packages.linux_7_0` in all four channel revisions (unstable
-  `64c08a7c`, unstable-small `3242faf1`, 25.11 `25f53830`, 25.11-small
-  `0f749800`); default kernel bumped to 7.0.10 across all rows
-  (previously 6.18.33 for unstable channels, 6.12.91 for 25.11
-  channels).  cifs-utils unchanged (unstable: 7.5, 25.11: 7.4).
-  7.0.x carries no backport of `3da1fdf4efbc`; all four rows remain
-  `:x: Vulnerable`.
+  `linux_latest` aliases `packages.linux_7_0` (7.0.10) in all four
+  channel revisions (unstable `64c08a7c`, unstable-small `01c8df74`,
+  25.11 `25f53830`, 25.11-small `0f749800`); unstable-small advanced
+  from `3242faf1` — kernel and cifs-utils unchanged (unstable: 7.5,
+  25.11: 7.4).  7.0.x carries no backport of `3da1fdf4efbc`; all four
+  rows remain `:x: Vulnerable`.
 - **Proxmox VE** (via the `pve-no-subscription` `Packages` index): VE 9
   default kernel `proxmox-kernel-7.0` (newest image 7.0.6-2-pve), VE 8
   default `proxmox-kernel-6.8` (newest 6.8.12-28-pve); both unpatched.
@@ -400,11 +397,15 @@ until a patched kernel is installed.
   Debian base version (trixie 7.4, bookworm 7.0 — both ≥ 6.14); both rows
   flipped from `:grey_question:` to `:x: Vulnerable`.
 - **Rocky Linux** (via BaseOS `repomd.xml` → `primary` on
-  `dl.rockylinux.org`): 10 ⇒ kernel 6.12.0-211.16.1.el10_2 / cifs-utils
-  7.5; 9 ⇒ 5.14.0-687.10.1.el9_8 / 7.5; 8 ⇒ 4.18.0-553.125.1.el8_10 /
-  7.0.  All kernels unpatched (no RLSA — no CVE yet), cifs-utils ≥ 6.14;
-  10 and 8 flipped from `:grey_question:` to `:x:`.  SELinux-enforcing
-  default may still constrain the upcall (see Rocky notes).
+  `dl.rockylinux.org` / errata RSS): 10 ⇒ kernel 6.12.0-211.16.1.el10_2
+  / cifs-utils 7.5 (no update); 9 ⇒ 5.14.0-687.12.1.el9_8 / 7.5
+  (RLSA-2026:21556, 2026-05-30); 8 ⇒ 4.18.0-553.126.1.el8_10 / 7.0
+  (RLSA-2026:21706, 2026-05-31).  All kernels unpatched for CIFSwitch
+  (no CVE assigned; no backport in any upstream stable tree).  The new
+  RLSAs include CVE-2026-31709 (SMB/CIFS client, CWE-1288 out-of-bounds
+  read — a different CIFS vulnerability, not the `vet_description` fix).
+  SELinux-enforcing default may still constrain the upcall (see Rocky
+  notes).
 - **Amazon Linux** (via the `cdn.amazonlinux.com` core mirror →
   `primary`): 2023 ⇒ kernel 6.1.172-216.329.amzn2023 / cifs-utils 7.5
   (default 6.1 stream; `kernel6.12`/`kernel6.18` streams not tracked
