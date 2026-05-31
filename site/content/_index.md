@@ -385,11 +385,11 @@ until a patched kernel is installed.
   rows flipped to `:x:`.
 - **NixOS** (via local nixpkgs clone): all four channels verified.
   `linux_latest` aliases `packages.linux_7_0` (7.0.10) in all four
-  channel revisions (unstable `64c08a7c`, unstable-small `01c8df74`,
-  25.11 `25f53830`, 25.11-small `0f749800`); unstable-small advanced
-  from `3242faf1` — kernel and cifs-utils unchanged (unstable: 7.5,
-  25.11: 7.4).  7.0.x carries no backport of `3da1fdf4efbc`; all four
-  rows remain `:x: Vulnerable`.
+  channel revisions (unstable `64c08a7c`, unstable-small `45cf63e0`,
+  25.11 `25f53830`, 25.11-small `255d527f`); unstable-small advanced
+  from `01c8df74` and 25.11-small from `0f749800` — kernel and
+  cifs-utils unchanged (unstable: 7.5, 25.11: 7.4).  7.0.x carries
+  no backport of `3da1fdf4efbc`; all four rows remain `:x: Vulnerable`.
 - **Proxmox VE** (via the `pve-no-subscription` `Packages` index): VE 9
   default kernel `proxmox-kernel-7.0` (newest image 7.0.6-2-pve), VE 8
   default `proxmox-kernel-6.8` (newest 6.8.12-28-pve); both unpatched.
