@@ -3,7 +3,7 @@ title: "CIFSwitch — CIFS cifs.spnego key-origin LPE tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-05-31
+lastmod: 2026-06-01
 cover:
   image: "cifswitch-tracker.png"
   alt: "CIFSwitch — CIFS cifs.spnego key-origin LPE tracker"
@@ -79,20 +79,21 @@ The effective lifetime of the bug is therefore roughly 19 years
 
 ## Upstream fixed versions
 
-The fix is present in Linus mainline, merged after the v7.0 branch point
-— it will first appear in a stable release when v7.1 ships.  No stable
-branch has received the backport yet.
+The fix is present in Linus mainline (merged post-v7.0) and was
+backported to all tracked stable branches on 2026-06-01.  The first
+fixed point release per branch is noted in the table.  Distro adoption
+is in progress; no kernel advisory has referenced the fix yet.
 
 | Branch | Status | Current | Notes |
 |---|---|---|---|
 | Linus mainline | :white_check_mark: Carries `3da1fdf4efbc` | — | merged post-v7.0; will appear in 7.1 on release |
-| 7.0.x | :x: Fix not yet backported | 7.0.10 | |
-| 6.18.x | :x: Fix not yet backported | 6.18.33 | |
-| 6.12.x | :x: Fix not yet backported | 6.12.91 | LTS 2028-12 |
-| 6.6.x  | :x: Fix not yet backported | 6.6.141 | LTS 2026-12 |
-| 6.1.x  | :x: Fix not yet backported | 6.1.174 | LTS 2026-12 |
-| 5.15.x | :x: Fix not yet backported | 5.15.208 | LTS 2026-12 |
-| 5.10.x | :x: Fix not yet backported | 5.10.257 | LTS 2026-12 |
+| 7.0.x | :white_check_mark: Backported | 7.0.11 | first fixed: 7.0.11 |
+| 6.18.x | :white_check_mark: Backported | 6.18.34 | first fixed: 6.18.34 |
+| 6.12.x | :white_check_mark: Backported | 6.12.92 | LTS 2028-12; first fixed: 6.12.92 |
+| 6.6.x  | :white_check_mark: Backported | 6.6.142 | LTS 2026-12; first fixed: 6.6.142 |
+| 6.1.x  | :white_check_mark: Backported | 6.1.175 | LTS 2026-12; first fixed: 6.1.175 |
+| 5.15.x | :white_check_mark: Backported | 5.15.209 | LTS 2026-12; first fixed: 5.15.209 |
+| 5.10.x | :white_check_mark: Backported | 5.10.258 | LTS 2026-12; first fixed: 5.10.258 |
 
 When verifying a kernel tree directly, the file is
 `fs/smb/client/cifs_spnego.c` on 6.7 and later, and
@@ -351,22 +352,23 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-05-31.*
+*Last verified 2026-06-01.*
 
 ### Upstream
 
 - The kernel fix is Linus mainline commit `3da1fdf4efbc`, adding the
   `.vet_description = cifs_spnego_key_vet_description` hook in
   `fs/smb/client/cifs_spnego.c`.  The fix was merged into Linus mainline
-  after v7.0 branched; it will first appear in a released kernel as v7.1.
+  after v7.0 branched; it will first appear as a standalone release in v7.1.
 - **No CVE assigned**: `git -C ~/src/linux/vulns grep -l
   3da1fdf4efbc -- 'cve/published/*'` returns no matches.
-- **All stable branches unpatched** (checked against
-  `~/src/linux/stable`): `git log` on `fs/smb/client/cifs_spnego.c`
-  (7.0.y, 6.18.y, 6.12.y, 6.6.y, 6.1.y) and `fs/cifs/cifs_spnego.c`
-  (5.15.y, 5.10.y) — no `vet_description` backport in any branch.
-  Current point releases per kernel.org finger_banner: 7.0.10, 6.18.33,
-  6.12.91, 6.6.141, 6.1.174, 5.15.208, 5.10.257 (unchanged).
+- **All stable branches now carry the backport** (checked against
+  `~/src/linux/stable`): backports landed in all tracked branches on
+  2026-06-01.  First fixed point releases: 7.0.11, 6.18.34, 6.12.92,
+  6.6.142, 6.1.175, 5.15.209, 5.10.258 (all 2026-06-01; confirmed via
+  `git tag --contains <backport-sha>` per branch).  Current point
+  releases per kernel.org finger_banner: 7.0.11, 6.18.34, 6.12.92,
+  6.6.142, 6.1.175, 5.15.209, 5.10.258.
 
 ### Distributions
 
@@ -410,6 +412,10 @@ until a patched kernel is installed.
   Both kernels unpatched.  AL2's cifs-utils 6.2 is < 6.14 — primary
   exploit path absent, reduced exposure; its row flipped from
   `:grey_question:` to `:x:`.
+- **Upstream stable backports landed 2026-06-01** — all tracked stable
+  branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
+  6.1.175, 5.15.209, 5.10.258); no distro kernel advisory has referenced
+  `3da1fdf4efbc` yet (checked Rocky errata RSS, 2026-06-01).
 - No CVE-keyed feeds (NVD, EPSS, Red Hat JSON, CISA KEV) resolve yet —
   no CVE has been assigned.
 
