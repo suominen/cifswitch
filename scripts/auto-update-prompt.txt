@@ -79,40 +79,40 @@ thing you may leave behind is the edited tracker (and its commit).
       oss-security, or an NVD keyword search (a non-kernel-CNA assignment
       may appear there without a vulns record).
 
-3. Distro rows — check the verdict signal, NOT the version. The per-distro
-   kernel and cifs-utils versions already in the table are frozen seed
-   snapshots. No stable kernel release carries the fix yet, so a row cannot
-   flip to fixed until the fix exists in a release to adopt — which makes
-   the exact distro point-release immaterial on a routine run. So do NOT
-   re-pull per-distro versions: skip the Debian madison feed, the
-   Rocky/Amazon RPM repodata, the Proxmox Packages index, and the nixpkgs
-   kernel/cifs-utils pins. That gzipped-index pulling was the one-time
-   seeding pass — it is what made the headless sandbox want gunzip, and the
-   routine run needs neither it nor gunzip.
+3. Distro rows — check adoption, not cosmetic versions. The per-distro
+   kernel and cifs-utils versions in the table are frozen seed snapshots:
+   update a row's recorded version only when its verdict actually changes.
 
-   What you DO check — the only things that flip a distro verdict:
-      - A distro advisory that actually ships the KERNEL fix: a DSA / USN /
-        RLSA / ALSA / ALAS or Proxmox advisory referencing commit
-        3da1fdf4efbc or (once assigned) the CVE. Feeds — Rocky errata RSS
-        (https://errata.build.resf.org/api/v2/advisories:rss), Red Hat
-        (https://access.redhat.com/security/security-updates/), Ubuntu
-        (https://ubuntu.com/security/cves), Amazon
-        (https://alas.aws.amazon.com/), Debian security-tracker (once a CVE
-        exists), Proxmox forum advisories. All HTML/RSS reads, no gunzip.
-      - The upstream backport and CVE-assignment signals from step 2 — the
-        leading indicators, both git-clone reads, no gunzip.
+   The fix is now in every tracked stable series (all rows in the *Upstream
+   fixed versions* table carry :white_check_mark:), so distros can now
+   adopt it — that is the live question each run. For each distro row whose
+   kernel series is fixed upstream, re-pull just the distro's KERNEL version
+   and compare it to that series' first-fixed point release:
+      - Debian: the madison API (plain curl) —
+          curl -fsS 'https://api.ftp-master.debian.org/madison?package=linux&s=sid,forky,trixie,bookworm,bullseye&text=on'
+      - Proxmox: the pve-no-subscription Packages.gz (needs zcat).
+      - NixOS: the channel kernel pin from the local nixpkgs clone.
+      - Rocky / Amazon: the RPM repodata (needs zcat) or the advisory feed.
+   Exact recipes are in CLAUDE.md. A row flips to :white_check_mark: when
+   its kernel reaches (or passes) its series' first-fixed release, OR a
+   distro advisory ships the fix (DSA / USN / RLSA / ALSA / ALAS / Proxmox
+   referencing 3da1fdf4efbc or, once assigned, the CVE). On a flip, record
+   the adopted kernel version and set "Fixed since" per the CLAUDE.md rule.
+   A version bump that stays BELOW the first-fixed release is NOT adoption —
+   leave the row and its recorded version untouched; recording such a bump
+   is the churn this tracker avoids.
+
+   zcat / gunzip ARE available to the headless run — use them for the
+   Packages.gz / repodata pulls. But pull only the KERNEL version, and only
+   for rows whose series is fixed upstream: downloading more than a verdict
+   needs is exactly what we avoid. (The "gunzip missing" complaint that
+   first surfaced this churn was a happy accident, not the control — the
+   discipline lives in this prompt, not in a withheld binary.)
 
    cifs-utils is a reachability GATE, not a fix: no cifs-utils update will
-   close the hole, so its version is not a fix signal — do not chase it.
+   close the hole, so its version never flips a verdict — do not chase it.
    The reduced-exposure rows (Debian bullseye, Amazon Linux 2, both
    < 6.14) stay reduced-exposure regardless.
-
-   Per-distro versions matter again only AFTER step 2 shows the fix has
-   landed in a stable series (or a CVE + advisory references it): then
-   re-pull just the affected distro's kernel version to record adoption and
-   set "Fixed since". That re-pull needs zcat/gunzip, which the headless
-   allowlist does not grant — note the gap in your commit message rather
-   than guessing a version.
 
    Do NOT record NixOS channel git-revisions (the
    channels.nixos.org/<channel>/git-revision pins) anywhere in the tracker.
