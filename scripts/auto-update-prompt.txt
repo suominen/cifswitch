@@ -24,6 +24,15 @@ Per-branch fixed versions and per-distro status all live in
 site/content/_index.md (the canonical tracker). Read it first rather than
 relying on anything cached here.
 
+Working-tree hygiene: the wrapper refuses to run on a dirty tree
+(`git status --porcelain`, which counts untracked files too), so a stray
+file left in the worktree blocks every subsequent scheduled run. Stream
+every fetch through a pipe — e.g. `curl -fsSL <url> | zcat | grep …` —
+and never save a downloaded repodata / Packages / primary.xml index into
+the worktree. If you genuinely need a scratch file, create it under a
+`mktemp -d` directory and delete it before you finish; the only thing you
+may leave behind is the edited tracker (and its commit).
+
 1. Read CLAUDE.md to learn the project conventions (especially the
    two-axis kernel + cifs-utils tracking, the status-emoji meanings, the
    "Fixed since" rule, and the date handling), then read
