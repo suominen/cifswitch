@@ -120,6 +120,50 @@ methodology out of it — which distros are reference-only, how NixOS
 channels are structured, and similar are agent guidance that belongs in
 this file, not the tracker.
 
+## Routine run scope — frozen version snapshots
+
+The per-distro **Kernel** and **cifs-utils** versions in the table are
+**frozen seed snapshots**, not live values.  No stable kernel release
+carries the fix yet, so a row's verdict cannot flip until the fix exists
+in a release to adopt — which makes the exact distro point-release
+immaterial on a routine run.  Do **not** re-pull per-distro versions from
+package indexes on every refresh: that gzipped-index pulling (Debian
+madison, Rocky / Amazon RPM repodata, Proxmox `Packages`, nixpkgs pins)
+was the one-time seeding pass, and re-running it only manufactures
+version-only churn (`tracker: … kernel bump`, `… channel rev bump`) that
+flips no verdict.  It is also why the headless allowlist grants no
+`zcat` / `gunzip` — the routine run needs neither.
+
+A routine run checks only the **verdict-flipping signals**, none of which
+need gunzip:
+
+1. **Upstream backport** of `3da1fdf4efbc` into a stable series — the
+   `~/src/linux/stable` git log.  This is the primary signal; the fix
+   first appears as a released kernel here.
+2. **CVE assignment** — the `~/src/linux/vulns` grep.
+3. **A distro advisory that ships the kernel fix** — a DSA / USN / RLSA /
+   ALSA / ALAS / Proxmox advisory referencing `3da1fdf4efbc` or (once
+   assigned) the CVE.
+
+cifs-utils is a reachability **gate**, not a fix: no cifs-utils update
+will close the hole, so its version is not a fix signal and is not chased
+on routine runs.  The reduced-exposure rows (Debian bullseye, Amazon
+Linux 2, both < 6.14) stay reduced-exposure regardless.
+
+The version-source recipes below (nixpkgs / Proxmox / RPM repodata /
+cifs-utils) are **seeding-and-adoption** methods, not routine-run steps:
+run them to seed a new row, and again — for the affected row only — once a
+stable release actually carries the fix and you need its adopted kernel
+version and *Fixed since* date.  That later re-pull needs `zcat` /
+`gunzip`, which the headless allowlist does not grant; note the gap rather
+than guessing.
+
+**Never record NixOS channel git-revisions** (the
+`channels.nixos.org/<channel>/git-revision` pins) in the tracker.  They
+advance on nearly every run — recording them turns a moving pointer into a
+tracked "commit-hash change" and manufactures a diff on an otherwise
+no-op run.
+
 ## Conventions for status entries
 
 - `:white_check_mark:` — the release's kernel carries the
@@ -344,6 +388,10 @@ matching `vulns.git` record.
 
 ## Local nixpkgs clone for NixOS channel verification
 
+*Seeding-and-adoption method, not a routine-run step — see "Routine run
+scope" above.  Do not record the resolved channel revisions in the
+tracker.*
+
 NixOS rows are verified from a local nixpkgs clone at
 `~/src/nixos/nixpkgs`, not the (JS-rendered, lagging) security-tracker
 page.  Each channel has a git-revision pointer at
@@ -378,6 +426,9 @@ fetch --quiet origin` first.
 
 ## Proxmox kernel version source
 
+*Seeding-and-adoption method, not a routine-run step — see "Routine run
+scope" above.*
+
 Proxmox ships its **own** kernel (`proxmox-kernel-*`, Ubuntu-derived) with
 a Debian userland, so the Debian madison feed does not cover it.  Pull the
 kernel version from the `pve-no-subscription` `Packages` index — plain
@@ -399,6 +450,10 @@ bookworm — use those madison rows).  Whether a Proxmox kernel carries the
 fix tracks the corresponding upstream/Ubuntu series, not Debian's.
 
 ## Rocky / Amazon kernel + cifs-utils version source (RPM repodata)
+
+*Seeding-and-adoption method, not a routine-run step — see "Routine run
+scope" above.  These indexes are gzipped, so they need `zcat`, which the
+headless run does not have.*
 
 Both ship `kernel` and `cifs-utils` as RPMs; pull versions straight from
 repodata (`repomd.xml` → the `*-primary.xml.gz` index), no advisory/CVE
@@ -426,6 +481,10 @@ Rocky 9 `5.14.0-687.10.1.el9_8` / 7.5, Rocky 8 `4.18.0-553.125.1.el8_10`
 `4.14.355-282.729.amzn2` / 6.2.  All kernels unpatched.
 
 ## cifs-utils version sources
+
+*Seeding-and-adoption method, not a routine-run step — see "Routine run
+scope" above.  cifs-utils is a reachability gate, not a fix, so its
+version never flips a verdict.*
 
 cifs-utils is a separate Samba project; track the per-distro package
 version, not just the kernel:

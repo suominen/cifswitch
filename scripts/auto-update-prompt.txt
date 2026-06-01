@@ -27,11 +27,10 @@ relying on anything cached here.
 Working-tree hygiene: the wrapper refuses to run on a dirty tree
 (`git status --porcelain`, which counts untracked files too), so a stray
 file left in the worktree blocks every subsequent scheduled run. Stream
-every fetch through a pipe — e.g. `curl -fsSL <url> | zcat | grep …` —
-and never save a downloaded repodata / Packages / primary.xml index into
-the worktree. If you genuinely need a scratch file, create it under a
-`mktemp -d` directory and delete it before you finish; the only thing you
-may leave behind is the edited tracker (and its commit).
+any fetch through a pipe — `curl -fsSL <url> | grep …` — and never save a
+download into the worktree. If you genuinely need a scratch file, create
+it under a `mktemp -d` directory and delete it before you finish; the only
+thing you may leave behind is the edited tracker (and its commit).
 
 1. Read CLAUDE.md to learn the project conventions (especially the
    two-axis kernel + cifs-utils tracking, the status-emoji meanings, the
@@ -80,47 +79,50 @@ may leave behind is the edited tracker (and its commit).
       oss-security, or an NVD keyword search (a non-kernel-CNA assignment
       may appear there without a vulns record).
 
-3. Two axes per distro row — verify BOTH:
+3. Distro rows — check the verdict signal, NOT the version. The per-distro
+   kernel and cifs-utils versions already in the table are frozen seed
+   snapshots. No stable kernel release carries the fix yet, so a row cannot
+   flip to fixed until the fix exists in a release to adopt — which makes
+   the exact distro point-release immaterial on a routine run. So do NOT
+   re-pull per-distro versions: skip the Debian madison feed, the
+   Rocky/Amazon RPM repodata, the Proxmox Packages index, and the nixpkgs
+   kernel/cifs-utils pins. That gzipped-index pulling was the one-time
+   seeding pass — it is what made the headless sandbox want gunzip, and the
+   routine run needs neither it nor gunzip.
 
-   KERNEL (the canonical fix; this is what flips Status to fixed and sets
-   "Fixed since"):
-      - Debian: current default kernel per suite via the dak madison API:
-          curl -fsS 'https://api.ftp-master.debian.org/madison?package=linux&s=sid,forky,trixie,bookworm,bullseye&text=on'
-        plus https://security-tracker.debian.org/tracker/ once a CVE is
-        assigned.
-      - Ubuntu: https://ubuntu.com/security/cves (and the kernel version
-        per release).
-      - Rocky/RHEL/Alma/Oracle: https://errata.build.resf.org/api/v2/advisories:rss,
-        https://access.redhat.com/security/security-updates/, and the
-        AlmaLinux blog/testing repo as a leading indicator.
-      - Amazon Linux: https://alas.aws.amazon.com/
-      - NixOS — the verdict source is the local nixpkgs clone (already
-        refreshed by the wrapper), not the web tracker. For each tracked
-        channel resolve the channel's pinned revision (curl -fsSL the
-        channels.nixos.org/<channel>/git-revision pointer — it 302s, so
-        follow redirects), then at that revision read the kernel pin:
-          git -C ~/src/nixos/nixpkgs show \
-            "<rev>:pkgs/os-specific/linux/kernel/kernels-org.json"
-        https://tracker.security.nixos.org/ is a secondary signal only.
-      - Proxmox: https://forum.proxmox.com/threads/proxmox-virtual-environment-security-advisories.149331/
+   What you DO check — the only things that flip a distro verdict:
+      - A distro advisory that actually ships the KERNEL fix: a DSA / USN /
+        RLSA / ALSA / ALAS or Proxmox advisory referencing commit
+        3da1fdf4efbc or (once assigned) the CVE. Feeds — Rocky errata RSS
+        (https://errata.build.resf.org/api/v2/advisories:rss), Red Hat
+        (https://access.redhat.com/security/security-updates/), Ubuntu
+        (https://ubuntu.com/security/cves), Amazon
+        (https://alas.aws.amazon.com/), Debian security-tracker (once a CVE
+        exists), Proxmox forum advisories. All HTML/RSS reads, no gunzip.
+      - The upstream backport and CVE-assignment signals from step 2 — the
+        leading indicators, both git-clone reads, no gunzip.
 
-   CIFS-UTILS (the reachability gate; >= 6.14 ships the namespace-
-   switching cifs.upcall — informational, does NOT by itself set the
-   verdict):
-      - Debian/Ubuntu: the madison API with package=cifs-utils, e.g.
-          curl -fsS 'https://api.ftp-master.debian.org/madison?package=cifs-utils&s=sid,forky,trixie,bookworm,bullseye&text=on'
-      - EL family / SUSE / Amazon: the cifs-utils RPM version in the
-        distro's package metadata or advisory text.
-      - NixOS: at the channel revision,
-          git -C ~/src/nixos/nixpkgs show \
-            "<rev>:pkgs/os-specific/linux/cifs-utils/default.nix" | grep -i version
-      - Upstream cifs-utils (watch for cifs.upcall hardening):
-        https://git.samba.org/?p=cifs-utils.git;a=summary
+   cifs-utils is a reachability GATE, not a fix: no cifs-utils update will
+   close the hole, so its version is not a fix signal — do not chase it.
+   The reduced-exposure rows (Debian bullseye, Amazon Linux 2, both
+   < 6.14) stay reduced-exposure regardless.
 
-   USERNS / LSM posture only matters when it changes the verdict to
-   :warning: (mitigated-by-default), e.g. Ubuntu 24.04+ AppArmor userns
-   restriction. A mitigation is never :white_check_mark: — the kernel
-   hole remains until the kernel ships the fix.
+   Per-distro versions matter again only AFTER step 2 shows the fix has
+   landed in a stable series (or a CVE + advisory references it): then
+   re-pull just the affected distro's kernel version to record adoption and
+   set "Fixed since". That re-pull needs zcat/gunzip, which the headless
+   allowlist does not grant — note the gap in your commit message rather
+   than guessing a version.
+
+   Do NOT record NixOS channel git-revisions (the
+   channels.nixos.org/<channel>/git-revision pins) anywhere in the tracker.
+   They advance on nearly every run; recording them manufactures a diff on
+   an otherwise no-op run — exactly the churn this tracker avoids.
+
+   USERNS / LSM posture only matters when it changes a verdict to :warning:
+   (mitigated-by-default), e.g. Ubuntu 24.04+ AppArmor userns restriction. A
+   mitigation is never :white_check_mark: — the kernel hole remains until the
+   kernel ships the fix.
 
 4. Edit site/content/_index.md to reflect any changes per the conventions
    in CLAUDE.md (status badges, kernel + cifs-utils versions, the
