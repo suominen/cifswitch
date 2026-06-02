@@ -3,7 +3,7 @@ title: "CIFSwitch — CIFS cifs.spnego key-origin LPE tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-01
+lastmod: 2026-06-02
 cover:
   image: "cifswitch-tracker.png"
   alt: "CIFSwitch — CIFS cifs.spnego key-origin LPE tracker"
@@ -124,7 +124,7 @@ tracked here and appear only as references where relevant.
 | Proxmox VE | 9 | 7.0.6-2-pve | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
 | Proxmox VE | 8 | 6.8.12-28-pve | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
 | NixOS | Unstable | 7.0.10 | 7.5 | — | :x: Vulnerable — see NixOS notes |
-| NixOS | Unstable (small) | 7.0.10 | 7.5 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | Unstable (small) | 7.0.11 | 7.5 | 2026-06-02 | :white_check_mark: Fixed |
 | NixOS | 25.11 | 7.0.10 | 7.4 | — | :x: Vulnerable — see NixOS notes |
 | NixOS | 25.11 (small) | 7.0.10 | 7.4 | — | :x: Vulnerable — see NixOS notes |
 | Rocky Linux | 10 | 6.12.0-211.16.1.el10_2 | 7.5 | — | :x: Vulnerable — see Rocky notes |
@@ -352,7 +352,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-01.*
+*Last verified 2026-06-02.*
 
 ### Upstream
 
@@ -385,10 +385,11 @@ until a patched kernel is installed.
   bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
   absent, reduced exposure).  All kernels unpatched; Debian sid/forky
   rows flipped to `:x:`.
-- **NixOS** (via local nixpkgs clone): all four channels pin the
-  `linux_7_0` series (7.0.10), with cifs-utils 7.5 on the unstable
-  channels and 7.4 on the 25.11 channels.  7.0.x carries no backport of
-  `3da1fdf4efbc`; all four rows remain `:x: Vulnerable`.
+- **NixOS** (via local nixpkgs clone): nixos-unstable-small advanced to
+  `linux_7_0` at 7.0.11 — the first fixed release; row flipped to
+  `:white_check_mark: Fixed`.  nixos-unstable, nixos-25.11, and
+  nixos-25.11-small remain at 7.0.10 — still `:x: Vulnerable`.
+  cifs-utils 7.5 on unstable channels, 7.4 on the 25.11 channels.
 - **Proxmox VE** (via the `pve-no-subscription` `Packages` index): VE 9
   default kernel `proxmox-kernel-7.0` (newest image 7.0.6-2-pve), VE 8
   default `proxmox-kernel-6.8` (newest 6.8.12-28-pve); both unpatched.
@@ -415,7 +416,7 @@ until a patched kernel is installed.
 - **Upstream stable backports landed 2026-06-01** — all tracked stable
   branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
   6.1.175, 5.15.209, 5.10.258); no distro kernel advisory has referenced
-  `3da1fdf4efbc` yet (checked Rocky errata RSS, 2026-06-01).
+  `3da1fdf4efbc` yet (checked Rocky errata RSS).
 - No CVE-keyed feeds (NVD, EPSS, Red Hat JSON, CISA KEV) resolve yet —
   no CVE has been assigned.
 
