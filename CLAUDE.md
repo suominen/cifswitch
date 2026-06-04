@@ -224,8 +224,12 @@ version, cifs-utils version, advisory, or commit-hash change), leave the
 file alone and don't commit at all — don't bump `lastmod`, don't bump
 `*Last verified*`, and don't insert "re-confirmed <today>"
 parentheticals.  The next real change is what records that everything in
-between was still current.  Once a CVE is assigned, EPSS/KEV movement
-also counts as a real change.
+between was still current.  Once a CVE is assigned, a KEV listing
+change or a shift in the EPSS score or percentile also counts as a real
+change — but the EPSS `scored <date>` is only the first-seen marker for
+the current score/percentile, not a fact in its own right.  EPSS
+re-scores daily, so a fresh scored date for an otherwise-unchanged value
+is a no-op: don't bump the date, `lastmod`, or commit.
 
 ## Build environment
 
