@@ -1,6 +1,6 @@
 baseURL = "https://kimmo.cloud/cifswitch/"
 locale = "en-US"
-title = "CIFSwitch — CIFS cifs.spnego key-origin LPE"
+title = "CVE-2026-46243 — CIFSwitch"
 copyright = "Copyright © 2026 [Kimmo Suominen](https://kimmo.suominen.com/) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)"
 
 enableEmoji = true

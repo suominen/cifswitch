@@ -1,12 +1,12 @@
 ---
-title: "CIFSwitch — CIFS cifs.spnego key-origin LPE tracking"
+title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
 lastmod: 2026-06-05
 cover:
   image: "cifswitch-tracker.png"
-  alt: "CIFSwitch — CIFS cifs.spnego key-origin LPE tracker"
+  alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
   hiddenInSingle: true
 ---
 
