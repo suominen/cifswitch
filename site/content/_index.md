@@ -32,7 +32,7 @@ adoption is being tracked below.  The Linux kernel CNA assigned
 | Public disclosure | 2026-05-27 — [heyitsas.im/posts/cifswitch][writeup] |
 | Public PoC | [manizada/CIFSwitch][poc] |
 | KEV listed | Not listed |
-| EPSS | 0.0002 (4th percentile), scored 2026-06-04 |
+| EPSS | 0.00016 (4th percentile), scored 2026-06-05 |
 
 ## How the chain works
 
@@ -423,7 +423,7 @@ until a patched kernel is installed.
   `3da1fdf4efbc` yet (checked Rocky errata RSS).
 - **CVE-keyed feeds**: NVD has the record (status *Awaiting Analysis*,
   CVSS 3.1 base 7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`, CWE-20);
-  EPSS scores it 0.0002 (4th percentile, scored 2026-06-04); CISA KEV does
+  EPSS scores it 0.00016 (4th percentile, scored 2026-06-05); CISA KEV does
   not list it.  NVD records CWE-20 (Improper Input Validation); the
   Summary keeps the privilege-management framing (CWE-269 / CWE-284)
   alongside it.
