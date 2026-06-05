@@ -370,7 +370,7 @@ remote-tracking ref but leaves local `HEAD` stale (a `HEAD` grep can miss
 a record that has already landed):
 
 ```
-git -C ~/src/linux/vulns grep -l 3da1fdf4efbc -- 'cve/published/*'
+git -C ~/src/linux/vulns grep -l 3da1fdf4efbc origin/master -- 'cve/published/*'
 ```
 
 The match is `cve/published/2026/CVE-2026-46243.*`.  The record's `.dyad`
