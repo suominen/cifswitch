@@ -13,8 +13,8 @@ The canonical fix is Linus mainline commit
 `.vet_description = cifs_spnego_key_vet_description` hook in
 `fs/smb/client/cifs_spnego.c` (pre-6.7 path: `fs/cifs/cifs_spnego.c`).
 
-No CVE has been assigned yet — the tracker uses the placeholder
-`CVE-2026-XXXXX`.  Disclosed 2026-05-27 by Asim Viladi Oglu Manizada.
+Tracked as `CVE-2026-46243`, assigned by the Linux kernel CNA on
+2026-06-01.  Disclosed 2026-05-27 by Asim Viladi Oglu Manizada.
 Writeup: <https://heyitsas.im/posts/cifswitch/> · PoC:
 <https://github.com/manizada/CIFSwitch>.
 
@@ -353,47 +353,40 @@ The legacy `fs/cifs/cifs_spnego.c` path applies to branches older than
 6.7.  The git smart-HTTP protocol is not Anubis-gated, so `git fetch` /
 `git ls-remote` work from any UA.
 
-## Discovering the CVE
+## The CVE (CVE-2026-46243)
 
-CIFSwitch has no CVE yet — the tracker uses the placeholder
-`CVE-2026-XXXXX`.  The CVE-keyed feeds (NVD, MITRE, Red Hat, EPSS, KEV)
-cannot *find* the assignment; they only become useful once the ID is
-known.
+CIFSwitch was assigned `CVE-2026-46243` by the Linux kernel CNA on
+2026-06-01 (the kernel has been its own CNA since Feb 2024).  The
+CVE-keyed feeds (NVD, MITRE, Red Hat, EPSS, KEV) are now live and are the
+sources to watch for a score, percentile, or KEV change — see "Date
+handling" for when an EPSS re-score is a no-op.
 
-The deterministic discovery path is the Linux kernel CNA's `vulns.git`
-(the kernel has been its own CNA since Feb 2024).  Records move through
-two stages, and the directory says which:
-
-- `cve/review/proposed/<release>-<reviewer>` — a candidate the CNA's
-  dredge has flagged but **not yet assigned**.  No CVE ID.
-- `cve/published/<year>/CVE-YYYY-NNNNN{,.json,.mbox,.dyad}` — an
-  **assigned** CVE.  The filename is the ID.
-
-Both stages reference the *fixing commit SHA*, and the CIFSwitch fix
-commit is known, so discovery is a grep — no keyword guessing.  The
-authoritative "a CVE exists" check scopes to `cve/published/`:
+It was discovered via the deterministic path: the kernel CNA's
+`vulns.git` keys every record on the *fixing commit SHA*, and the
+CIFSwitch fix commit is known, so the check is a grep — no keyword
+guessing.  **Inspect via `origin/master`, not `HEAD`** — the wrapper
+refreshes the clone with `git fetch` only, which advances the
+remote-tracking ref but leaves local `HEAD` stale (a `HEAD` grep can miss
+a record that has already landed):
 
 ```
-git -C ~/src/linux/vulns fetch --quiet origin
 git -C ~/src/linux/vulns grep -l 3da1fdf4efbc -- 'cve/published/*'
 ```
 
-When that matches, the matching filename *is* the CVE ID.  At that point:
+The match is `cve/published/2026/CVE-2026-46243.*`.  The record's `.dyad`
+gives the authoritative per-branch `<introduced>:<fixed>` versions
+(introduced 2.6.24 / `f1d662a7d5e5`; the fixed versions match the
+*Upstream fixed versions* table):
 
-1. Replace `CVE-2026-XXXXX` throughout `site/content/_index.md` (and any
-   CVE-keyed URLs in `CLAUDE.md`) with the real ID, and add the
-   CVE-keyed feeds.
-2. Read the record's `.dyad` for the per-branch `<introduced>:<fixed>`
-   versions — authoritative for the *Upstream fixed versions* table:
-   `git -C ~/src/linux/vulns show HEAD:cve/published/<year>/CVE-….dyad`.
-3. See `WEBSITE.md` for the repo / site-path rename to the CVE ID.
+```
+git -C ~/src/linux/vulns show origin/master:cve/published/2026/CVE-2026-46243.dyad
+```
 
-The wrapper refreshes `vulns` every run, so this works the moment a CVE
-lands; inspect via `HEAD` (it tracks a single branch).  Smart-HTTP
-`git fetch` is not Anubis-gated.  Secondary, fuzzier signals only: the
-disclosure writeup / oss-security, or an NVD keyword search — note that a
-non-kernel-CNA assignment (MITRE or a distro) may surface there without a
-matching `vulns.git` record.
+The repo / site path was **not** renamed to the CVE ID (see `WEBSITE.md`);
+the published URL stays `kimmo.cloud/cifswitch/`.  Should a *second*,
+non-kernel-CNA CVE ever surface (MITRE or a distro) it may appear in NVD
+without a matching `vulns.git` record — watch the disclosure writeup /
+oss-security as a fuzzier secondary signal.
 
 ## Local nixpkgs clone for NixOS channel verification
 
@@ -521,7 +514,12 @@ version, not just the kernel:
 | stable kernel releases | <https://www.kernel.org/category/releases.html> |
 | stable point release banner | <https://www.kernel.org/finger_banner> |
 | cifs-utils upstream | <https://git.samba.org/?p=cifs-utils.git;a=summary> |
-| Debian security tracker (once CVE assigned) | <https://security-tracker.debian.org/tracker/> |
+| NVD record | <https://nvd.nist.gov/vuln/detail/CVE-2026-46243> |
+| MITRE CVE record | <https://www.cve.org/CVERecord?id=CVE-2026-46243> |
+| Red Hat CVE | <https://access.redhat.com/security/cve/CVE-2026-46243> |
+| FIRST EPSS | <https://api.first.org/data/v1/epss?cve=CVE-2026-46243> |
+| CISA KEV catalog | <https://www.cisa.gov/known-exploited-vulnerabilities-catalog> |
+| Debian security tracker | <https://security-tracker.debian.org/tracker/CVE-2026-46243> |
 | Debian package madison (dak-backed) | <https://api.ftp-master.debian.org/madison?package=linux&s=sid,forky,trixie,bookworm,bullseye&text=on> |
 | Ubuntu CVE tracker | <https://ubuntu.com/security/cves> |
 | Red Hat security search | <https://access.redhat.com/security/security-updates/> |
@@ -532,9 +530,9 @@ version, not just the kernel:
 | Proxmox advisories (thread) | <https://forum.proxmox.com/threads/proxmox-virtual-environment-security-advisories.149331/> |
 | Proxmox advisories (user posts, newest first) | <https://forum.proxmox.com/search/16039688/?t=post&c[users]=ProxmoxSecurityAdvisory&o=date> |
 
-Once a CVE is assigned, switch the placeholder `CVE-2026-XXXXX`
-throughout the tracker to the real ID and add the CVE-keyed feeds (NVD,
-MITRE CVE Awg JSON, Red Hat JSON, FIRST EPSS, CISA KEV).
+The CVE-keyed feeds above (NVD, MITRE, Red Hat, FIRST EPSS, CISA KEV) are
+live now that `CVE-2026-46243` is assigned; monitor them for a CVSS score,
+KEV listing, or EPSS score/percentile shift.
 
 For machine-readable data, prefer API/feed endpoints over HTML pages —
 several distro sites are JS-rendered SPAs that don't render via WebFetch.

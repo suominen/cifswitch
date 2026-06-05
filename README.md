@@ -14,8 +14,9 @@ The canonical fix is Linux kernel mainline commit
 [`3da1fdf4efbc`](https://github.com/torvalds/linux/commit/3da1fdf4efbc490041eb4f836bf596201203f8f2),
 which adds a `.vet_description` hook that rejects forged key descriptions.
 
-No CVE has been assigned yet; the tracker uses the placeholder
-`CVE-2026-XXXXX`.
+Tracked as
+[`CVE-2026-46243`](https://nvd.nist.gov/vuln/detail/CVE-2026-46243),
+assigned by the Linux kernel CNA on 2026-06-01.
 
 The rendered site is published at **<https://kimmo.cloud/cifswitch/>**.
 Deployment plan and current setup state live in [`WEBSITE.md`](WEBSITE.md).

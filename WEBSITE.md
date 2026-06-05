@@ -25,24 +25,22 @@ trackers; only the content and a few config strings differ.
 - **Web server:** existing nginx vhost on `kimmo.cloud` serves
   `htdocs/cifswitch/` directly at the URL path `/cifswitch/`.
 
-## Naming — pre-CVE slug
+## Naming — nickname slug (kept)
 
-No CVE has been assigned to CIFSwitch yet.  Following the precedent of
-the sibling trackers (pintheft is still on its nickname slug; Dirty Frag
-was renamed from `/dirty-frag/` to `/CVE-2026-43284/` once MITRE assigned
-the ID), this site is published under its nickname slug `/cifswitch/` for
-now:
+`CVE-2026-46243` was assigned by the Linux kernel CNA on 2026-06-01, but
+this site **keeps its nickname slug** `/cifswitch/` rather than retargeting
+to the CVE ID.  (Sibling-tracker precedent runs both ways: pintheft stayed
+on its nickname; Dirty Frag was renamed to `/CVE-2026-43284/`.  For
+CIFSwitch the decision is to stay on the nickname.)  Unchanged:
 
 - repo: `~/src/cifswitch`, `github.com/suominen/cifswitch`
 - Go module path: `github.com/suominen/cifswitch/site`
 - URL: `https://kimmo.cloud/cifswitch/`
 - systemd units: `cifswitch-tracker-update.{service,timer}`
 
-When a CVE is assigned, retarget `baseURL`, the repo/dir name, the Go
-module path, and the rsync destination to the CVE ID — and leave (or
-add) a redirect from `/cifswitch/` so existing links survive.  The
-auto-update prompt already instructs the agent to swap the placeholder
-`CVE-2026-XXXXX` for the real ID in the tracker body once assigned.
+The CVE ID lives in the tracker body, Summary table, and references — not
+in the repo name, `baseURL`, Go module path, or rsync destination.  No
+redirect is needed since the slug never moved.
 
 ## Tracker content
 

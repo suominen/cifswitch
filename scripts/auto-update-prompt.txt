@@ -12,8 +12,8 @@ steer the rootful `cifs.upcall` helper (cifs-utils >= 6.14) into loading
 an attacker-controlled NSS module as root. The canonical fix is Linus
 mainline commit 3da1fdf4efbc490041eb4f836bf596201203f8f2, which adds a
 `.vet_description = cifs_spnego_key_vet_description` hook in
-fs/smb/client/cifs_spnego.c (pre-6.7 path: fs/cifs/cifs_spnego.c). No CVE
-has been assigned yet — the tracker uses the placeholder CVE-2026-XXXXX.
+fs/smb/client/cifs_spnego.c (pre-6.7 path: fs/cifs/cifs_spnego.c). It is
+tracked as CVE-2026-46243, assigned by the Linux kernel CNA on 2026-06-01.
 
 References:
 - Writeup: https://heyitsas.im/posts/cifswitch/
@@ -63,21 +63,19 @@ thing you may leave behind is the edited tracker (and its commit).
       to branches older than 6.7. Record the first fixed point release
       per branch.
 
-   b. CVE discovery — the deterministic signal is the kernel CNA's vulns
-      database, NOT the writeup/oss-security/NVD (those cannot find an
-      assignment, only confirm a known ID). Grep the published records
-      for the fix commit — the matching filename IS the CVE ID:
-        git -C ~/src/linux/vulns grep -l 3da1fdf4efbc -- 'cve/published/*'
-      If it matches, switch the placeholder CVE-2026-XXXXX throughout the
-      tracker to that ID, add the CVE-keyed feeds (NVD, MITRE CVE Awg
-      JSON, Red Hat JSON, FIRST EPSS, CISA KEV), and read the record's
-      .dyad for the per-branch <introduced>:<fixed> versions
-      (authoritative for the *Upstream fixed versions* table):
-        git -C ~/src/linux/vulns show HEAD:cve/published/2026/CVE-2026-NNNNN.dyad
-      See "Discovering the CVE" in CLAUDE.md for the review/proposed ->
-      published staging. Secondary signals only: the disclosure writeup /
-      oss-security, or an NVD keyword search (a non-kernel-CNA assignment
-      may appear there without a vulns record).
+   b. CVE feeds — the CVE is already assigned (CVE-2026-46243, kernel CNA,
+      2026-06-01). Discovery is done; watch the CVE-keyed feeds (NVD,
+      MITRE, Red Hat JSON, FIRST EPSS, CISA KEV) for a real change: a CVSS
+      score appearing, a KEV listing, or a shift in the EPSS score /
+      percentile. Per the date-handling rule in CLAUDE.md, a fresh EPSS
+      `scored` date for an unchanged score/percentile is a no-op — do not
+      bump it. The kernel CNA record itself is stable; if you re-check it,
+      inspect via origin/master (the wrapper only fetches, so HEAD is
+      stale):
+        git -C ~/src/linux/vulns show origin/master:cve/published/2026/CVE-2026-46243.dyad
+      Only a SECOND, non-kernel-CNA assignment (MITRE or a distro) would be
+      new — it may surface in NVD without a vulns record; the writeup /
+      oss-security are fuzzier secondary signals for that.
 
 3. Distro rows — check adoption, not cosmetic versions. The per-distro
    kernel and cifs-utils versions in the table are frozen seed snapshots:
@@ -96,7 +94,7 @@ thing you may leave behind is the edited tracker (and its commit).
    Exact recipes are in CLAUDE.md. A row flips to :white_check_mark: when
    its kernel reaches (or passes) its series' first-fixed release, OR a
    distro advisory ships the fix (DSA / USN / RLSA / ALSA / ALAS / Proxmox
-   referencing 3da1fdf4efbc or, once assigned, the CVE). On a flip, record
+   referencing 3da1fdf4efbc or CVE-2026-46243). On a flip, record
    the adopted kernel version and set "Fixed since" per the CLAUDE.md rule.
    A version bump that stays BELOW the first-fixed release is NOT adoption —
    leave the row and its recorded version untouched; recording such a bump

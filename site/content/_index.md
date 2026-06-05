@@ -3,7 +3,7 @@ title: "CIFSwitch — CIFS cifs.spnego key-origin LPE tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-03
+lastmod: 2026-06-05
 cover:
   image: "cifswitch-tracker.png"
   alt: "CIFSwitch — CIFS cifs.spnego key-origin LPE tracker"
@@ -15,24 +15,24 @@ never validated that a `cifs.spnego` key description originated from
 kernel code, so an unprivileged user can forge one and steer the rootful
 `cifs.upcall` helper into loading an attacker-controlled NSS module.  The
 kernel fix (commit [`3da1fdf4efbc`][fix-commit]) is in mainline; distro
-adoption is being tracked below.  No CVE has been assigned yet — this
-tracker uses the placeholder `CVE-2026-XXXXX`.*
+adoption is being tracked below.  The Linux kernel CNA assigned
+[`CVE-2026-46243`][nvd] on 2026-06-01.*
 
 ## Summary
 
 | Field | Detail |
 |---|---|
-| CVE ID | Not yet assigned — placeholder `CVE-2026-XXXXX` |
+| CVE ID | [CVE-2026-46243][nvd] (assigned 2026-06-01 by the Linux kernel CNA) |
 | Alias | CIFSwitch |
 | Component | Kernel: `fs/smb/client/cifs_spnego.c` (pre-6.7 path: `fs/cifs/cifs_spnego.c`) · Userspace: `cifs.upcall` from cifs-utils ≥ 6.14 |
 | Type | Local Privilege Escalation (LPE) — forged `cifs.spnego` key → rootful upcall → attacker NSS-module load |
-| CWE | [CWE-269][cwe-269] Improper Privilege Management · [CWE-284][cwe-284] Improper Access Control |
-| CVSS | not yet scored |
+| CWE | [CWE-269][cwe-269] Improper Privilege Management · [CWE-284][cwe-284] Improper Access Control (NVD: [CWE-20][cwe-20] Improper Input Validation) |
+| CVSS | 7.8 (High) — `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (NVD) |
 | Discoverer | Asim Viladi Oglu Manizada |
 | Public disclosure | 2026-05-27 — [heyitsas.im/posts/cifswitch][writeup] |
 | Public PoC | [manizada/CIFSwitch][poc] |
-| KEV listed | not yet |
-| EPSS | n/a until a CVE is assigned |
+| KEV listed | Not listed |
+| EPSS | 0.0002 (4th percentile), scored 2026-06-04 |
 
 ## How the chain works
 
@@ -71,11 +71,11 @@ patch is the canonical fix** this tracker keys on.
 
 | Commit | Role | Description |
 |---|---|---|
-| *(git blame: ~2007)* | Introduced | The `cifs.spnego` key type has lacked an origin check since SPNEGO upcall support was added (~2007).  No single introducing commit is cited by the disclosure. |
+| `f1d662a7d5e5` | Introduced | *[CIFS] Add upcall files for cifs to use spnego/kerberos* (2007-11-05) — added the `cifs.spnego` key type without an origin check; first shipped in v2.6.24.  Identified as the introducing commit by the kernel CNA's CVE record. |
 | [`3da1fdf4efbc`][fix-commit] | Fix | Adds the `.vet_description = cifs_spnego_key_vet_description` hook, rejecting forged key descriptions; Linus mainline. |
 
 The effective lifetime of the bug is therefore roughly 19 years
-(2007–2026).
+(2007–2026), spanning v2.6.24 (released 2008-01-24) through the fix.
 
 ## Upstream fixed versions
 
@@ -147,9 +147,9 @@ On the EL family `cifs` is a loadable module and SELinux is enforcing by
 default, which may constrain `cifs.upcall`'s ability to load an arbitrary
 NSS module — confirm against the actual policy before treating a release
 as not exploitable.  The shipped `cifs-utils` version is the other gate:
-older EL releases may predate the 6.14 namespace-switch upcall.  Once a
-CVE is assigned, RLSAs (and the matching RHSA / ALSA references) carry the
-fixed kernel.
+older EL releases may predate the 6.14 namespace-switch upcall.  Watch for
+RLSAs (and the matching RHSA / ALSA references) citing CVE-2026-46243 to
+carry the fixed kernel.
 
 ## Detection
 
@@ -352,7 +352,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-03.*
+*Last verified 2026-06-05.*
 
 ### Upstream
 
@@ -360,15 +360,17 @@ until a patched kernel is installed.
   `.vet_description = cifs_spnego_key_vet_description` hook in
   `fs/smb/client/cifs_spnego.c`.  The fix was merged into Linus mainline
   after v7.0 branched; it will first appear as a standalone release in v7.1.
-- **No CVE assigned**: `git -C ~/src/linux/vulns grep -l
-  3da1fdf4efbc -- 'cve/published/*'` returns no matches.
-- **All stable branches now carry the backport** (checked against
-  `~/src/linux/stable`): backports landed in all tracked branches on
-  2026-06-01.  First fixed point releases: 7.0.11, 6.18.34, 6.12.92,
-  6.6.142, 6.1.175, 5.15.209, 5.10.258 (all 2026-06-01; confirmed via
-  `git tag --contains <backport-sha>` per branch).  Current point
-  releases per kernel.org finger_banner: 7.0.11, 6.18.34, 6.12.92,
-  6.6.142, 6.1.175, 5.15.209, 5.10.258.
+- **CVE assigned**: the Linux kernel CNA assigned `CVE-2026-46243`
+  (*smb: client: reject userspace cifs.spnego descriptions*) on
+  2026-06-01.  Its record confirms the introducing commit `f1d662a7d5e5`
+  (v2.6.24) and per-branch first-fixed versions matching the *Upstream
+  fixed versions* table.
+- **All stable branches now carry the backport**: it landed in all
+  tracked branches on 2026-06-01.  First fixed point releases: 7.0.11,
+  6.18.34, 6.12.92, 6.6.142, 6.1.175, 5.15.209, 5.10.258 (all 2026-06-01,
+  confirmed per branch).  Current point releases per kernel.org
+  finger_banner match those: 7.0.11, 6.18.34, 6.12.92, 6.6.142, 6.1.175,
+  5.15.209, 5.10.258.
 
 ### Distributions
 
@@ -379,13 +381,13 @@ until a patched kernel is installed.
   9.7, Oracle Linux 9/8, CentOS Stream 9, SLES 15 SP7, openSUSE Leap
   15.6, Linux Mint 22.3/21.3, and Kali 2021.4+ as vulnerable; those are
   used as references only, not tracked as rows.
-- **Debian** (via `api.ftp-master.debian.org/madison`):
+- **Debian** (via the Debian madison archive):
   sid 7.0.10-1 / cifs-utils 7.4; forky 7.0.9-1 / cifs-utils 7.4; trixie
   6.12.86-1 / cifs-utils 7.4; bookworm 6.1.170-3 / cifs-utils 7.0;
   bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
   absent, reduced exposure).  All kernels unpatched; Debian sid/forky
   rows flipped to `:x:`.
-- **NixOS** (via local nixpkgs clone): nixos-unstable-small and
+- **NixOS** (via the nixpkgs channel pins): nixos-unstable-small and
   nixos-25.11-small have both advanced to `linux_7_0` at 7.0.11 — the
   first fixed release; both rows `:white_check_mark: Fixed`.
   nixos-unstable and nixos-25.11 remain at 7.0.10 — still
@@ -397,18 +399,19 @@ until a patched kernel is installed.
   Proxmox ships its own kernel but Debian userland, so cifs-utils is the
   Debian base version (trixie 7.4, bookworm 7.0 — both ≥ 6.14); both rows
   flipped from `:grey_question:` to `:x: Vulnerable`.
-- **Rocky Linux** (via BaseOS `repomd.xml` → `primary` on
-  `dl.rockylinux.org` / errata RSS): 10 ⇒ kernel 6.12.0-211.16.1.el10_2
+- **Rocky Linux** (via the Rocky BaseOS repodata / errata RSS): 10 ⇒
+  kernel 6.12.0-211.16.1.el10_2
   / cifs-utils 7.5 (no update); 9 ⇒ 5.14.0-687.12.1.el9_8 / 7.5
   (RLSA-2026:21556, 2026-05-30); 8 ⇒ 4.18.0-553.126.1.el8_10 / 7.0
   (RLSA-2026:21706, 2026-05-31).  All kernels unpatched for CIFSwitch
-  (no CVE assigned; no backport in any upstream stable tree).  The new
-  RLSAs include CVE-2026-31709 (SMB/CIFS client, CWE-1288 out-of-bounds
-  read — a different CIFS vulnerability, not the `vet_description` fix).
+  (no RLSA cites CVE-2026-46243; no `vet_description` backport in the EL
+  kernels yet).  The new RLSAs include CVE-2026-31709 (SMB/CIFS client,
+  CWE-1288 out-of-bounds read — a different CIFS vulnerability, not the
+  `vet_description` fix).
   SELinux-enforcing default may still constrain the upcall (see Rocky
   notes).
-- **Amazon Linux** (via the `cdn.amazonlinux.com` core mirror →
-  `primary`): 2023 ⇒ kernel 6.1.172-216.329.amzn2023 / cifs-utils 7.5
+- **Amazon Linux** (via the Amazon Linux core repodata): 2023 ⇒ kernel
+  6.1.172-216.329.amzn2023 / cifs-utils 7.5
   (default 6.1 stream; `kernel6.12`/`kernel6.18` streams not tracked
   separately); 2 ⇒ core kernel 4.14.355-282.729.amzn2 / cifs-utils 6.2.
   Both kernels unpatched.  AL2's cifs-utils 6.2 is < 6.14 — primary
@@ -418,8 +421,12 @@ until a patched kernel is installed.
   branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
   6.1.175, 5.15.209, 5.10.258); no distro kernel advisory has referenced
   `3da1fdf4efbc` yet (checked Rocky errata RSS).
-- No CVE-keyed feeds (NVD, EPSS, Red Hat JSON, CISA KEV) resolve yet —
-  no CVE has been assigned.
+- **CVE-keyed feeds**: NVD has the record (status *Awaiting Analysis*,
+  CVSS 3.1 base 7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`, CWE-20);
+  EPSS scores it 0.0002 (4th percentile, scored 2026-06-04); CISA KEV does
+  not list it.  NVD records CWE-20 (Improper Input Validation); the
+  Summary keeps the privilege-management framing (CWE-269 / CWE-284)
+  alongside it.
 
 ## References
 
@@ -429,9 +436,17 @@ until a patched kernel is installed.
 | Public PoC | <https://github.com/manizada/CIFSwitch> |
 | Kernel fix commit | <https://github.com/torvalds/linux/commit/3da1fdf4efbc490041eb4f836bf596201203f8f2> |
 | cifs-utils upstream | <https://git.samba.org/?p=cifs-utils.git;a=summary> |
+| NVD | <https://nvd.nist.gov/vuln/detail/CVE-2026-46243> |
+| MITRE CVE | <https://www.cve.org/CVERecord?id=CVE-2026-46243> |
+| Kernel CNA record | <https://lore.kernel.org/linux-cve-announce/?q=CVE-2026-46243> |
+| Red Hat | <https://access.redhat.com/security/cve/CVE-2026-46243> |
+| FIRST EPSS | <https://api.first.org/data/v1/epss?cve=CVE-2026-46243> |
+| CISA KEV | <https://www.cisa.gov/known-exploited-vulnerabilities-catalog> |
 
 [writeup]: https://heyitsas.im/posts/cifswitch/
 [poc]: https://github.com/manizada/CIFSwitch
 [fix-commit]: https://github.com/torvalds/linux/commit/3da1fdf4efbc490041eb4f836bf596201203f8f2
 [cwe-269]: https://cwe.mitre.org/data/definitions/269.html
 [cwe-284]: https://cwe.mitre.org/data/definitions/284.html
+[cwe-20]: https://cwe.mitre.org/data/definitions/20.html
+[nvd]: https://nvd.nist.gov/vuln/detail/CVE-2026-46243

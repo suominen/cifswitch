@@ -18,16 +18,19 @@
     CIFSwitch
   </text>
 
-  <text x="80" y="210" font-family="SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-weight="600" font-size="28" fill="#ff5555" letter-spacing="1">
-    VULNERABILITY TRACKER · CVE-2026-XXXXX
+  <text x="80" y="205" font-family="SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-weight="600" font-size="28" fill="#ff5555" letter-spacing="1">
+    VULNERABILITY TRACKER
+  </text>
+  <text x="80" y="245" font-family="SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-weight="600" font-size="28" fill="#ff5555" letter-spacing="1">
+    CVE-2026-46243
   </text>
 
-  <text x="80" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="400" font-size="28" fill="#9b9b9d" width="600">
+  <text x="80" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="400" font-size="28" fill="#9b9b9d" width="600">
     Linux Kernel CIFS cifs.spnego Key-Origin
   </text>
-  <line x1="80" y1="305" x2="105" y2="305" stroke="#9b9b9d" stroke-width="2.5" />
-  <polygon points="114,305 104,299 104,311" fill="#9b9b9d" />
-  <text x="126" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="400" font-size="28" fill="#9b9b9d">
+  <line x1="80" y1="330" x2="105" y2="330" stroke="#9b9b9d" stroke-width="2.5" />
+  <polygon points="114,330 104,324 104,336" fill="#9b9b9d" />
+  <text x="126" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="400" font-size="28" fill="#9b9b9d">
     Rootful Upcall NSS-Module LPE
   </text>
 
