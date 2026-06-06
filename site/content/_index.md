@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-05
+lastmod: 2026-06-06
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -27,7 +27,7 @@ adoption is being tracked below.  The Linux kernel CNA assigned
 | Component | Kernel: `fs/smb/client/cifs_spnego.c` (pre-6.7 path: `fs/cifs/cifs_spnego.c`) · Userspace: `cifs.upcall` from cifs-utils ≥ 6.14 |
 | Type | Local Privilege Escalation (LPE) — forged `cifs.spnego` key → rootful upcall → attacker NSS-module load |
 | CWE | [CWE-269][cwe-269] Improper Privilege Management · [CWE-284][cwe-284] Improper Access Control (NVD: [CWE-20][cwe-20] Improper Input Validation) |
-| CVSS | 7.8 (High) — `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (NVD) |
+| CVSS | 7.1 (High) — `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N` (kernel CNA) · 7.8 (High) — `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (CISA-ADP) |
 | Discoverer | Asim Viladi Oglu Manizada |
 | Public disclosure | 2026-05-27 — [heyitsas.im/posts/cifswitch][writeup] |
 | Public PoC | [manizada/CIFSwitch][poc] |
@@ -125,7 +125,7 @@ tracked here and appear only as references where relevant.
 | Proxmox VE | 8 | 6.8.12-28-pve | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
 | NixOS | Unstable | 7.0.10 | 7.5 | — | :x: Vulnerable — see NixOS notes |
 | NixOS | Unstable (small) | 7.0.11 | 7.5 | 2026-06-02 | :white_check_mark: Fixed |
-| NixOS | 25.11 | 7.0.10 | 7.4 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | 25.11 | 7.0.11 | 7.4 | 2026-06-06 | :white_check_mark: Fixed |
 | NixOS | 25.11 (small) | 7.0.11 | 7.4 | 2026-06-03 | :white_check_mark: Fixed |
 | Rocky Linux | 10 | 6.12.0-211.16.1.el10_2 | 7.5 | — | :x: Vulnerable — see Rocky notes |
 | Rocky Linux | 9 | 5.14.0-687.12.1.el9_8 | 7.5 | — | :x: Vulnerable — see Rocky notes |
@@ -352,7 +352,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-05.*
+*Last verified 2026-06-06.*
 
 ### Upstream
 
@@ -387,11 +387,11 @@ until a patched kernel is installed.
   bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
   absent, reduced exposure).  All kernels unpatched; Debian sid/forky
   rows flipped to `:x:`.
-- **NixOS** (via the nixpkgs channel pins): nixos-unstable-small and
-  nixos-25.11-small have both advanced to `linux_7_0` at 7.0.11 — the
-  first fixed release; both rows `:white_check_mark: Fixed`.
-  nixos-unstable and nixos-25.11 remain at 7.0.10 — still
-  `:x: Vulnerable`.  cifs-utils 7.5 on unstable channels, 7.4 on
+- **NixOS** (via the nixpkgs channel branches): nixos-unstable-small,
+  nixos-25.11-small, and nixos-25.11 have all advanced to `linux_7_0`
+  at 7.0.11 — the first fixed release; all three rows
+  `:white_check_mark: Fixed`.  nixos-unstable remains at 7.0.10 —
+  still `:x: Vulnerable`.  cifs-utils 7.5 on unstable channels, 7.4 on
   the 25.11 channels.
 - **Proxmox VE** (via the `pve-no-subscription` `Packages` index): VE 9
   default kernel `proxmox-kernel-7.0` (newest image 7.0.6-2-pve), VE 8
@@ -421,10 +421,12 @@ until a patched kernel is installed.
   branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
   6.1.175, 5.15.209, 5.10.258); no distro kernel advisory has referenced
   `3da1fdf4efbc` yet (checked Rocky errata RSS).
-- **CVE-keyed feeds**: NVD has the record (status *Awaiting Analysis*,
-  CVSS 3.1 base 7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`, CWE-20);
-  EPSS scores it 0.00016 (4th percentile, scored 2026-06-05); CISA KEV does
-  not list it.  NVD records CWE-20 (Improper Input Validation); the
+- **CVE-keyed feeds**: NVD has the record (status *Awaiting Enrichment*,
+  CWE-20); the kernel CNA submitted CVSS 3.1 7.1 High
+  `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N`; CISA-ADP independently scored
+  7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (A:H vs CNA's A:N).
+  EPSS scores it 0.00016 (4th percentile, scored 2026-06-05); CISA KEV
+  does not list it.  NVD records CWE-20 (Improper Input Validation); the
   Summary keeps the privilege-management framing (CWE-269 / CWE-284)
   alongside it.
 
