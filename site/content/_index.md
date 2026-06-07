@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-06
+lastmod: 2026-06-07
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -32,7 +32,7 @@ adoption is being tracked below.  The Linux kernel CNA assigned
 | Public disclosure | 2026-05-27 — [heyitsas.im/posts/cifswitch][writeup] |
 | Public PoC | [manizada/CIFSwitch][poc] |
 | KEV listed | Not listed |
-| EPSS | 0.00016 (4th percentile), scored 2026-06-05 |
+| EPSS | 0.00018 (4th percentile), scored 2026-06-07 |
 
 ## How the chain works
 
@@ -352,7 +352,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-06.*
+*Last verified 2026-06-07.*
 
 ### Upstream
 
@@ -421,11 +421,11 @@ until a patched kernel is installed.
   branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
   6.1.175, 5.15.209, 5.10.258); no distro kernel advisory has referenced
   `3da1fdf4efbc` yet (checked Rocky errata RSS).
-- **CVE-keyed feeds**: NVD has the record (status *Awaiting Enrichment*,
+- **CVE-keyed feeds**: NVD has the record (status *Awaiting Analysis*,
   CWE-20); the kernel CNA submitted CVSS 3.1 7.1 High
   `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N`; CISA-ADP independently scored
   7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (A:H vs CNA's A:N).
-  EPSS scores it 0.00016 (4th percentile, scored 2026-06-05); CISA KEV
+  EPSS scores it 0.00018 (4th percentile, scored 2026-06-07); CISA KEV
   does not list it.  NVD records CWE-20 (Improper Input Validation); the
   Summary keeps the privilege-management framing (CWE-269 / CWE-284)
   alongside it.
