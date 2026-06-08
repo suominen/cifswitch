@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-07
+lastmod: 2026-06-08
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -123,7 +123,7 @@ tracked here and appear only as references where relevant.
 | Debian | 11 (bullseye, LTS) | 5.10.223-1 | 6.11 | — | :x: Vulnerable — cifs-utils 6.11 &lt; 6.14; primary exploit path absent, reduced exposure |
 | Proxmox VE | 9 | 7.0.6-2-pve | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
 | Proxmox VE | 8 | 6.8.12-28-pve | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
-| NixOS | Unstable | 7.0.10 | 7.5 | — | :x: Vulnerable — see NixOS notes |
+| NixOS | Unstable | 7.0.11 | 7.5 | 2026-06-08 | :white_check_mark: Fixed |
 | NixOS | Unstable (small) | 7.0.11 | 7.5 | 2026-06-02 | :white_check_mark: Fixed |
 | NixOS | 25.11 | 7.0.11 | 7.4 | 2026-06-06 | :white_check_mark: Fixed |
 | NixOS | 25.11 (small) | 7.0.11 | 7.4 | 2026-06-03 | :white_check_mark: Fixed |
@@ -352,7 +352,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-07.*
+*Last verified 2026-06-08.*
 
 ### Upstream
 
@@ -387,12 +387,12 @@ until a patched kernel is installed.
   bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
   absent, reduced exposure).  All kernels unpatched; Debian sid/forky
   rows flipped to `:x:`.
-- **NixOS** (via the nixpkgs channel branches): nixos-unstable-small,
-  nixos-25.11-small, and nixos-25.11 have all advanced to `linux_7_0`
-  at 7.0.11 — the first fixed release; all three rows
-  `:white_check_mark: Fixed`.  nixos-unstable remains at 7.0.10 —
-  still `:x: Vulnerable`.  cifs-utils 7.5 on unstable channels, 7.4 on
-  the 25.11 channels.
+- **NixOS** (via the nixpkgs channel branches): all four tracked channels
+  have now advanced to `linux_7_0` at 7.0.11 — the first fixed release;
+  all four rows `:white_check_mark: Fixed`.  nixos-unstable advanced to
+  7.0.11 (from 7.0.10) since the previous check (via the channel
+  pointer).  cifs-utils 7.5 on unstable channels, 7.4 on the 25.11
+  channels.
 - **Proxmox VE** (via the `pve-no-subscription` `Packages` index): VE 9
   default kernel `proxmox-kernel-7.0` (newest image 7.0.6-2-pve), VE 8
   default `proxmox-kernel-6.8` (newest 6.8.12-28-pve); both unpatched.
