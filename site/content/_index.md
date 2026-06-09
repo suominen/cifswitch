@@ -87,9 +87,9 @@ is in progress; no kernel advisory has referenced the fix yet.
 | Branch | Status | Current | Notes |
 |---|---|---|---|
 | Linus mainline | :white_check_mark: Carries `3da1fdf4efbc` | — | merged post-v7.0; will appear in 7.1 on release |
-| 7.0.x | :white_check_mark: Backported | 7.0.11 | first fixed: 7.0.11 |
-| 6.18.x | :white_check_mark: Backported | 6.18.34 | first fixed: 6.18.34 |
-| 6.12.x | :white_check_mark: Backported | 6.12.92 | LTS 2028-12; first fixed: 6.12.92 |
+| 7.0.x | :white_check_mark: Backported | 7.0.12 | first fixed: 7.0.11 |
+| 6.18.x | :white_check_mark: Backported | 6.18.35 | first fixed: 6.18.34 |
+| 6.12.x | :white_check_mark: Backported | 6.12.93 | LTS 2028-12; first fixed: 6.12.92 |
 | 6.6.x  | :white_check_mark: Backported | 6.6.142 | LTS 2026-12; first fixed: 6.6.142 |
 | 6.1.x  | :white_check_mark: Backported | 6.1.175 | LTS 2026-12; first fixed: 6.1.175 |
 | 5.15.x | :white_check_mark: Backported | 5.15.209 | LTS 2026-12; first fixed: 5.15.209 |
@@ -369,8 +369,8 @@ until a patched kernel is installed.
   tracked branches on 2026-06-01.  First fixed point releases: 7.0.11,
   6.18.34, 6.12.92, 6.6.142, 6.1.175, 5.15.209, 5.10.258 (all 2026-06-01,
   confirmed per branch).  Current point releases per kernel.org
-  finger_banner match those: 7.0.11, 6.18.34, 6.12.92, 6.6.142, 6.1.175,
-  5.15.209, 5.10.258.
+  finger_banner: 7.0.12, 6.18.35, 6.12.93, 6.6.142, 6.1.175, 5.15.209,
+  5.10.258.
 
 ### Distributions
 
@@ -421,7 +421,7 @@ until a patched kernel is installed.
   branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
   6.1.175, 5.15.209, 5.10.258); no distro kernel advisory has referenced
   `3da1fdf4efbc` yet (checked Rocky errata RSS).
-- **CVE-keyed feeds**: NVD has the record (status *Awaiting Enrichment*,
+- **CVE-keyed feeds**: NVD has the record (status *Awaiting Analysis*,
   CWE-20); the kernel CNA submitted CVSS 3.1 7.1 High
   `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N`; CISA-ADP independently scored
   7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (A:H vs CNA's A:N).
