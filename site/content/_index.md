@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-08
+lastmod: 2026-06-09
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -352,7 +352,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-08.*
+*Last verified 2026-06-09.*
 
 ### Upstream
 
@@ -421,7 +421,7 @@ until a patched kernel is installed.
   branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
   6.1.175, 5.15.209, 5.10.258); no distro kernel advisory has referenced
   `3da1fdf4efbc` yet (checked Rocky errata RSS).
-- **CVE-keyed feeds**: NVD has the record (status *Awaiting Analysis*,
+- **CVE-keyed feeds**: NVD has the record (status *Awaiting Enrichment*,
   CWE-20); the kernel CNA submitted CVSS 3.1 7.1 High
   `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N`; CISA-ADP independently scored
   7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (A:H vs CNA's A:N).
