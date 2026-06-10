@@ -117,10 +117,10 @@ tracked here and appear only as references where relevant.
 | Distribution | Release | Kernel | cifs-utils | Fixed since | Status |
 |---|---|---|---|---|---|
 | Debian | sid (unstable) | 7.0.12-1 | 7.4 | 2026-06-10 | :white_check_mark: Fixed |
-| Debian | forky (testing) | 7.0.9-1 | 7.4 | — | :x: Vulnerable |
-| Debian | 13 (trixie) | 6.12.86-1 | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
-| Debian | 12 (bookworm) | 6.1.170-3 | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
-| Debian | 11 (bullseye, LTS) | 5.10.223-1 | 6.11 | — | :x: Vulnerable — cifs-utils 6.11 &lt; 6.14; primary exploit path absent, reduced exposure |
+| Debian | forky (testing) | 7.0.10-1 | 7.4 | 2026-05-28 | :white_check_mark: Fixed |
+| Debian | 13 (trixie) | 6.12.90-2 | 7.4 | 2026-05-28 | :white_check_mark: Fixed |
+| Debian | 12 (bookworm) | 6.1.174-1 | 7.0 | 2026-05-28 | :white_check_mark: Fixed |
+| Debian | 11 (bullseye, LTS) | 5.10.257-1 | 6.11 | 2026-05-29 | :white_check_mark: Fixed |
 | Proxmox VE | 9 | 7.0.6-2-pve | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
 | Proxmox VE | 8 | 6.8.12-28-pve | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
 | NixOS | Unstable | 7.0.11 | 7.5 | 2026-06-08 | :white_check_mark: Fixed |
@@ -381,13 +381,16 @@ until a patched kernel is installed.
   9.7, Oracle Linux 9/8, CentOS Stream 9, SLES 15 SP7, openSUSE Leap
   15.6, Linux Mint 22.3/21.3, and Kali 2021.4+ as vulnerable; those are
   used as references only, not tracked as rows.
-- **Debian** (via the Debian madison archive):
-  sid 7.0.12-1 / cifs-utils 7.4; forky 7.0.10-1 / cifs-utils 7.4; trixie
-  6.12.86-1 / cifs-utils 7.4; bookworm 6.1.170-3 / cifs-utils 7.0;
-  bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
-  absent, reduced exposure).  sid flipped to `:white_check_mark: Fixed`
-  (kernel 7.0.12-1 ≥ first-fixed 7.0.11); forky at 7.0.10-1 still below
-  7.0.11, remains `:x:`; other kernels unpatched.
+- **Debian** (via the Debian security tracker; main-archive versions
+  confirmed via madison): all five tracked releases now carry the kernel
+  fix.  sid: 7.0.12-1 (already fixed; main archive).  forky: 7.0.10-1
+  fixed — Debian cherry-picked `3da1fdf4efbc` into 7.0.10, predating
+  the upstream first-fixed 7.0.11.  trixie: 6.12.90-2 via DSA 6305-1.
+  bookworm: 6.1.174-1 via DSA 6306-1.  bullseye: 5.10.257-1 via
+  DLA-4606-1.  All three DSA/DLA publications predate CVE assignment
+  (2026-06-01); the packages were retroactively linked to CVE-2026-46243
+  by the security tracker.  cifs-utils unchanged: sid/forky/trixie 7.4;
+  bookworm 7.0; bullseye 6.11 (< 6.14 — primary exploit path was absent).
 - **NixOS** (via the nixpkgs channel branches): all four tracked channels
   have now advanced to `linux_7_0` at 7.0.11 — the first fixed release;
   all four rows `:white_check_mark: Fixed`.  nixos-unstable advanced to
