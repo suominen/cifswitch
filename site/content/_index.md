@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-09
+lastmod: 2026-06-10
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -32,7 +32,7 @@ adoption is being tracked below.  The Linux kernel CNA assigned
 | Public disclosure | 2026-05-27 — [heyitsas.im/posts/cifswitch][writeup] |
 | Public PoC | [manizada/CIFSwitch][poc] |
 | KEV listed | Not listed |
-| EPSS | 0.00018 (4th percentile), scored 2026-06-07 |
+| EPSS | 0.00018 (5th percentile), scored 2026-06-09 |
 
 ## How the chain works
 
@@ -116,7 +116,7 @@ tracked here and appear only as references where relevant.
 
 | Distribution | Release | Kernel | cifs-utils | Fixed since | Status |
 |---|---|---|---|---|---|
-| Debian | sid (unstable) | 7.0.10-1 | 7.4 | — | :x: Vulnerable |
+| Debian | sid (unstable) | 7.0.12-1 | 7.4 | 2026-06-10 | :white_check_mark: Fixed |
 | Debian | forky (testing) | 7.0.9-1 | 7.4 | — | :x: Vulnerable |
 | Debian | 13 (trixie) | 6.12.86-1 | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
 | Debian | 12 (bookworm) | 6.1.170-3 | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
@@ -352,7 +352,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-09.*
+*Last verified 2026-06-10.*
 
 ### Upstream
 
@@ -382,11 +382,12 @@ until a patched kernel is installed.
   15.6, Linux Mint 22.3/21.3, and Kali 2021.4+ as vulnerable; those are
   used as references only, not tracked as rows.
 - **Debian** (via the Debian madison archive):
-  sid 7.0.10-1 / cifs-utils 7.4; forky 7.0.9-1 / cifs-utils 7.4; trixie
+  sid 7.0.12-1 / cifs-utils 7.4; forky 7.0.10-1 / cifs-utils 7.4; trixie
   6.12.86-1 / cifs-utils 7.4; bookworm 6.1.170-3 / cifs-utils 7.0;
   bullseye 5.10.223-1 / cifs-utils 6.11 (< 6.14 — primary exploit path
-  absent, reduced exposure).  All kernels unpatched; Debian sid/forky
-  rows flipped to `:x:`.
+  absent, reduced exposure).  sid flipped to `:white_check_mark: Fixed`
+  (kernel 7.0.12-1 ≥ first-fixed 7.0.11); forky at 7.0.10-1 still below
+  7.0.11, remains `:x:`; other kernels unpatched.
 - **NixOS** (via the nixpkgs channel branches): all four tracked channels
   have now advanced to `linux_7_0` at 7.0.11 — the first fixed release;
   all four rows `:white_check_mark: Fixed`.  nixos-unstable advanced to
@@ -421,11 +422,12 @@ until a patched kernel is installed.
   branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
   6.1.175, 5.15.209, 5.10.258); no distro kernel advisory has referenced
   `3da1fdf4efbc` yet (checked Rocky errata RSS).
-- **CVE-keyed feeds**: NVD has the record (status *Awaiting Analysis*,
-  CWE-20); the kernel CNA submitted CVSS 3.1 7.1 High
+- **CVE-keyed feeds**: NVD record status *Analyzed* (initial analysis
+  completed 2026-06-09; CWE-20); NIST has not yet published its own CVSS
+  score.  Kernel CNA submitted CVSS 3.1 7.1 High
   `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N`; CISA-ADP independently scored
   7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (A:H vs CNA's A:N).
-  EPSS scores it 0.00018 (4th percentile, scored 2026-06-07); CISA KEV
+  EPSS scores it 0.00018 (5th percentile, scored 2026-06-09); CISA KEV
   does not list it.  NVD records CWE-20 (Improper Input Validation); the
   Summary keeps the privilege-management framing (CWE-269 / CWE-284)
   alongside it.
