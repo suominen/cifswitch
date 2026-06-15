@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-13
+lastmod: 2026-06-15
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -26,7 +26,7 @@ adoption is being tracked below.  The Linux kernel CNA assigned
 | Alias | CIFSwitch |
 | Component | Kernel: `fs/smb/client/cifs_spnego.c` (pre-6.7 path: `fs/cifs/cifs_spnego.c`) · Userspace: `cifs.upcall` from cifs-utils ≥ 6.14 |
 | Type | Local Privilege Escalation (LPE) — forged `cifs.spnego` key → rootful upcall → attacker NSS-module load |
-| CWE | [CWE-269][cwe-269] Improper Privilege Management · [CWE-284][cwe-284] Improper Access Control (NVD: [CWE-20][cwe-20] Improper Input Validation) |
+| CWE | [CWE-269][cwe-269] Improper Privilege Management · [CWE-284][cwe-284] Improper Access Control (CISA-ADP: [CWE-20][cwe-20] Improper Input Validation; NVD: unclassified) |
 | CVSS | 7.1 (High) — `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N` (kernel CNA) · 7.8 (High) — `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (CISA-ADP) |
 | Discoverer | Asim Viladi Oglu Manizada |
 | Public disclosure | 2026-05-27 — [heyitsas.im/posts/cifswitch][writeup] |
@@ -86,7 +86,7 @@ is in progress; no kernel advisory has referenced the fix yet.
 
 | Branch | Status | Current | Notes |
 |---|---|---|---|
-| Linus mainline | :white_check_mark: Carries `3da1fdf4efbc` | — | merged post-v7.0; will appear in 7.1 on release |
+| Linus mainline | :white_check_mark: Carries `3da1fdf4efbc` | — | merged post-v7.0; first appeared in v7.1 |
 | 7.0.x | :white_check_mark: Backported | 7.0.12 | first fixed: 7.0.11 |
 | 6.18.x | :white_check_mark: Backported | 6.18.35 | first fixed: 6.18.34 |
 | 6.12.x | :white_check_mark: Backported | 6.12.93 | LTS 2028-12; first fixed: 6.12.92 |
@@ -352,7 +352,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-13.*
+*Last verified 2026-06-15.*
 
 ### Upstream
 
@@ -371,6 +371,9 @@ until a patched kernel is installed.
   confirmed per branch).  Current point releases per kernel.org
   finger_banner: 7.0.12, 6.18.35, 6.12.93, 6.6.142, 6.1.175, 5.15.209,
   5.10.258.
+- **v7.1 released**: kernel.org `finger_banner` now reports v7.1 as the
+  latest stable/mainline; the upstream table note has been updated from
+  "will appear in 7.1 on release" to "first appeared in v7.1".
 
 ### Distributions
 
@@ -431,9 +434,11 @@ until a patched kernel is installed.
   `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N`; CISA-ADP independently scored
   7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (A:H vs CNA's A:N).
   EPSS scores it 0.00021 (6th percentile, scored 2026-06-13); CISA KEV
-  does not list it.  NVD records CWE-20 (Improper Input Validation); the
-  Summary keeps the privilege-management framing (CWE-269 / CWE-284)
-  alongside it.
+  does not list it.  NVD's own CWE mapping is now `NVD-CWE-noinfo`
+  (unclassified); CWE-20 (Improper Input Validation) is attributed to
+  CISA-ADP in the NVD record.  The Summary's CWE attribution has been
+  updated accordingly; the privilege-management framing (CWE-269 /
+  CWE-284) is unchanged.
 
 ## References
 
