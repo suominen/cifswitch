@@ -32,7 +32,7 @@ adoption is being tracked below.  The Linux kernel CNA assigned
 | Public disclosure | 2026-05-27 — [heyitsas.im/posts/cifswitch][writeup] |
 | Public PoC | [manizada/CIFSwitch][poc] |
 | KEV listed | Not listed |
-| EPSS | 0.00021 (6th percentile), scored 2026-06-13 |
+| EPSS | 0.00145 (4th percentile), scored 2026-06-15 |
 
 ## How the chain works
 
@@ -406,24 +406,21 @@ until a patched kernel is installed.
   Proxmox ships its own kernel but Debian userland, so cifs-utils is the
   Debian base version (trixie 7.4, bookworm 7.0 — both ≥ 6.14); both rows
   flipped from `:grey_question:` to `:x: Vulnerable`.
-- **Rocky Linux** (via the Rocky BaseOS repodata / errata RSS): 10 ⇒
-  kernel 6.12.0-211.16.1.el10_2
-  / cifs-utils 7.5 (no update); 9 ⇒ 5.14.0-687.12.1.el9_8 / 7.5
-  (RLSA-2026:21556, 2026-05-30); 8 ⇒ 4.18.0-553.126.1.el8_10 / 7.0
-  (RLSA-2026:21706, 2026-05-31).  All kernels unpatched for CIFSwitch
-  (no RLSA cites CVE-2026-46243; no `vet_description` backport in the EL
-  kernels yet).  The new RLSAs include CVE-2026-31709 (SMB/CIFS client,
-  CWE-1288 out-of-bounds read — a different CIFS vulnerability, not the
-  `vet_description` fix).
-  SELinux-enforcing default may still constrain the upcall (see Rocky
-  notes).
+- **Rocky Linux** (via the Rocky BaseOS repodata / errata RSS): Two new
+  kernel advisories since the previous check — RLSA-2026:25191 (Critical,
+  2026-06-13) advances Rocky 10 to 6.12.0-211.22.1.el10_2; RLSA-2026:25217
+  (Important, 2026-06-13) advances Rocky 9 to 5.14.0-687.15.1.el9_8.
+  Neither cites CVE-2026-46243.  Rocky 8 is unchanged at
+  4.18.0-553.126.1.el8_10.  All three kernels remain unpatched for
+  CIFSwitch; no RLSA in any Rocky release cites CVE-2026-46243 or the
+  `vet_description` fix.  SELinux-enforcing default may still constrain
+  the upcall (see Rocky notes).
 - **Amazon Linux** (via the Amazon Linux core repodata): 2023 ⇒ kernel
-  6.1.172-216.329.amzn2023 / cifs-utils 7.5
-  (default 6.1 stream; `kernel6.12`/`kernel6.18` streams not tracked
-  separately); 2 ⇒ core kernel 4.14.355-282.729.amzn2 / cifs-utils 6.2.
-  Both kernels unpatched.  AL2's cifs-utils 6.2 is < 6.14 — primary
-  exploit path absent, reduced exposure; its row flipped from
-  `:grey_question:` to `:x:`.
+  6.1.174-217.345.amzn2023 / cifs-utils 7.5 (default 6.1 stream;
+  `kernel6.12`/`kernel6.18` streams not tracked separately) — one upstream
+  point release short of first-fixed 6.1.175, kernel unpatched; 2 ⇒ core
+  kernel 4.14.355-282.729.amzn2 / cifs-utils 6.2, unpatched.  AL2's
+  cifs-utils 6.2 is < 6.14 — primary exploit path absent, reduced exposure.
 - **Upstream stable backports landed 2026-06-01** — all tracked stable
   branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
   6.1.175, 5.15.209, 5.10.258); no distro kernel advisory has referenced
@@ -433,7 +430,7 @@ until a patched kernel is installed.
   score.  Kernel CNA submitted CVSS 3.1 7.1 High
   `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N`; CISA-ADP independently scored
   7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (A:H vs CNA's A:N).
-  EPSS scores it 0.00021 (6th percentile, scored 2026-06-13); CISA KEV
+  EPSS scores it 0.00145 (4th percentile, scored 2026-06-15); CISA KEV
   does not list it.  NVD's own CWE mapping is now `NVD-CWE-noinfo`
   (unclassified); CWE-20 (Improper Input Validation) is attributed to
   CISA-ADP in the NVD record.  The Summary's CWE attribution has been
