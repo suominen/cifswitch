@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-15
+lastmod: 2026-06-19
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -87,13 +87,14 @@ is in progress; no kernel advisory has referenced the fix yet.
 | Branch | Status | Current | Notes |
 |---|---|---|---|
 | Linus mainline | :white_check_mark: Carries `3da1fdf4efbc` | — | merged post-v7.0; first appeared in v7.1 |
-| 7.0.x | :white_check_mark: Backported | 7.0.12 | first fixed: 7.0.11 |
-| 6.18.x | :white_check_mark: Backported | 6.18.35 | first fixed: 6.18.34 |
-| 6.12.x | :white_check_mark: Backported | 6.12.93 | LTS 2028-12; first fixed: 6.12.92 |
-| 6.6.x  | :white_check_mark: Backported | 6.6.142 | LTS 2026-12; first fixed: 6.6.142 |
-| 6.1.x  | :white_check_mark: Backported | 6.1.175 | LTS 2026-12; first fixed: 6.1.175 |
-| 5.15.x | :white_check_mark: Backported | 5.15.209 | LTS 2026-12; first fixed: 5.15.209 |
-| 5.10.x | :white_check_mark: Backported | 5.10.258 | LTS 2026-12; first fixed: 5.10.258 |
+| 7.1.x | :white_check_mark: Carries fix | 7.1.1 | fix predates this branch; first fixed: 7.1.1 |
+| 7.0.x | :white_check_mark: Backported | 7.0.13 | first fixed: 7.0.11 |
+| 6.18.x | :white_check_mark: Backported | 6.18.36 | first fixed: 6.18.34 |
+| 6.12.x | :white_check_mark: Backported | 6.12.94 | LTS 2028-12; first fixed: 6.12.92 |
+| 6.6.x  | :white_check_mark: Backported | 6.6.143 | LTS 2026-12; first fixed: 6.6.142 |
+| 6.1.x  | :white_check_mark: Backported | 6.1.176 | LTS 2026-12; first fixed: 6.1.175 |
+| 5.15.x | :white_check_mark: Backported | 5.15.210 | LTS 2026-12; first fixed: 5.15.209 |
+| 5.10.x | :white_check_mark: Backported | 5.10.259 | LTS 2026-12; first fixed: 5.10.258 |
 
 When verifying a kernel tree directly, the file is
 `fs/smb/client/cifs_spnego.c` on 6.7 and later, and
@@ -352,14 +353,14 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-15.*
+*Last verified 2026-06-19.*
 
 ### Upstream
 
 - The kernel fix is Linus mainline commit `3da1fdf4efbc`, adding the
   `.vet_description = cifs_spnego_key_vet_description` hook in
   `fs/smb/client/cifs_spnego.c`.  The fix was merged into Linus mainline
-  after v7.0 branched; it will first appear as a standalone release in v7.1.
+  after v7.0 branched; it first appeared in v7.1.
 - **CVE assigned**: the Linux kernel CNA assigned `CVE-2026-46243`
   (*smb: client: reject userspace cifs.spnego descriptions*) on
   2026-06-01.  Its record confirms the introducing commit `f1d662a7d5e5`
@@ -369,11 +370,12 @@ until a patched kernel is installed.
   tracked branches on 2026-06-01.  First fixed point releases: 7.0.11,
   6.18.34, 6.12.92, 6.6.142, 6.1.175, 5.15.209, 5.10.258 (all 2026-06-01,
   confirmed per branch).  Current point releases per kernel.org
-  finger_banner: 7.0.12, 6.18.35, 6.12.93, 6.6.142, 6.1.175, 5.15.209,
-  5.10.258.
-- **v7.1 released**: kernel.org `finger_banner` now reports v7.1 as the
-  latest stable/mainline; the upstream table note has been updated from
-  "will appear in 7.1 on release" to "first appeared in v7.1".
+  finger_banner: 7.0.13, 6.18.36, 6.12.94, 6.6.143, 6.1.176, 5.15.210,
+  5.10.259.
+- **7.1.x stable branch**: kernel.org `finger_banner` lists 7.1.x as a
+  stable branch (7.1.1 first point release); the fix predates the entire
+  7.1.x branch — every 7.1.x release carries it.  Added as a tracked row
+  in the *Upstream fixed versions* table.
 
 ### Distributions
 
@@ -402,7 +404,7 @@ until a patched kernel is installed.
   channels.
 - **Proxmox VE** (via the `pve-no-subscription` `Packages` index): VE 9
   default kernel `proxmox-kernel-7.0` (newest image 7.0.6-2-pve), VE 8
-  default `proxmox-kernel-6.8` (newest 6.8.12-28-pve); both unpatched.
+  default `proxmox-kernel-6.8` (newest 6.8.12-30-pve); both unpatched.
   Proxmox ships its own kernel but Debian userland, so cifs-utils is the
   Debian base version (trixie 7.4, bookworm 7.0 — both ≥ 6.14); both rows
   flipped from `:grey_question:` to `:x: Vulnerable`.
@@ -410,11 +412,12 @@ until a patched kernel is installed.
   kernel advisories since the previous check — RLSA-2026:25191 (Critical,
   2026-06-13) advances Rocky 10 to 6.12.0-211.22.1.el10_2; RLSA-2026:25217
   (Important, 2026-06-13) advances Rocky 9 to 5.14.0-687.15.1.el9_8.
-  Neither cites CVE-2026-46243.  Rocky 8 is unchanged at
-  4.18.0-553.126.1.el8_10.  All three kernels remain unpatched for
-  CIFSwitch; no RLSA in any Rocky release cites CVE-2026-46243 or the
-  `vet_description` fix.  SELinux-enforcing default may still constrain
-  the upcall (see Rocky notes).
+  Neither cites CVE-2026-46243.  Rocky 8 advanced to
+  4.18.0-553.134.1.el8_10 (4.18.x is not a tracked upstream stable
+  series).  All three kernels remain unpatched for CIFSwitch; no RLSA in
+  any Rocky release cites CVE-2026-46243 or the `vet_description` fix.
+  SELinux-enforcing default may still constrain the upcall (see Rocky
+  notes).
 - **Amazon Linux** (via the Amazon Linux core repodata): 2023 ⇒ kernel
   6.1.174-217.345.amzn2023 / cifs-utils 7.5 (default 6.1 stream;
   `kernel6.12`/`kernel6.18` streams not tracked separately) — one upstream
