@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-19
+lastmod: 2026-06-20
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -122,7 +122,7 @@ tracked here and appear only as references where relevant.
 | Debian | 13 (trixie) | 6.12.90-2 | 7.4 | 2026-05-28 | :white_check_mark: Fixed |
 | Debian | 12 (bookworm) | 6.1.174-1 | 7.0 | 2026-05-28 | :white_check_mark: Fixed |
 | Debian | 11 (bullseye, LTS) | 5.10.257-1 | 6.11 | 2026-05-29 | :white_check_mark: Fixed |
-| Proxmox VE | 9 | 7.0.6-2-pve | 7.4 | — | :x: Vulnerable — no fixed kernel yet |
+| Proxmox VE | 9 | 7.0.12-1-pve | 7.4 | 2026-06-20 | :white_check_mark: Fixed |
 | Proxmox VE | 8 | 6.8.12-28-pve | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
 | NixOS | Unstable | 7.0.11 | 7.5 | 2026-06-08 | :white_check_mark: Fixed |
 | NixOS | Unstable (small) | 7.0.11 | 7.5 | 2026-06-02 | :white_check_mark: Fixed |
@@ -353,7 +353,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-19.*
+*Last verified 2026-06-20.*
 
 ### Upstream
 
@@ -403,21 +403,22 @@ until a patched kernel is installed.
   pointer).  cifs-utils 7.5 on unstable channels, 7.4 on the 25.11
   channels.
 - **Proxmox VE** (via the `pve-no-subscription` `Packages` index): VE 9
-  default kernel `proxmox-kernel-7.0` (newest image 7.0.6-2-pve), VE 8
-  default `proxmox-kernel-6.8` (newest 6.8.12-30-pve); both unpatched.
-  Proxmox ships its own kernel but Debian userland, so cifs-utils is the
-  Debian base version (trixie 7.4, bookworm 7.0 — both ≥ 6.14); both rows
-  flipped from `:grey_question:` to `:x: Vulnerable`.
-- **Rocky Linux** (via the Rocky BaseOS repodata / errata RSS): Two new
-  kernel advisories since the previous check — RLSA-2026:25191 (Critical,
-  2026-06-13) advances Rocky 10 to 6.12.0-211.22.1.el10_2; RLSA-2026:25217
-  (Important, 2026-06-13) advances Rocky 9 to 5.14.0-687.15.1.el9_8.
-  Neither cites CVE-2026-46243.  Rocky 8 advanced to
-  4.18.0-553.134.1.el8_10 (4.18.x is not a tracked upstream stable
-  series).  All three kernels remain unpatched for CIFSwitch; no RLSA in
-  any Rocky release cites CVE-2026-46243 or the `vet_description` fix.
-  SELinux-enforcing default may still constrain the upcall (see Rocky
-  notes).
+  `proxmox-kernel-7.0` series has advanced to 7.0.12-1-pve, which is ≥
+  7.0.11 (first fixed in the 7.0.x series) — row flips to
+  `:white_check_mark: Fixed`.  VE 8 remains on `proxmox-kernel-6.8`
+  (6.8.x carries no upstream backport of the fix) — still
+  `:x: Vulnerable`.  Proxmox ships its own kernel but Debian userland;
+  cifs-utils is the Debian base version (trixie 7.4, bookworm 7.0 —
+  both ≥ 6.14).
+- **Rocky Linux** (via the Rocky errata RSS / BaseOS repodata): Latest
+  kernel advisories — RLSA-2026:25191 (2026-06-13) for Rocky 10 at
+  6.12.0-211.22.1.el10_2; RLSA-2026:25217 (2026-06-13) for Rocky 9 at
+  5.14.0-687.15.1.el9_8; RLSA-2026:26427 (2026-06-19) for Rocky 8
+  (kernel version unconfirmed this run; 4.18.x not a tracked upstream
+  stable series).  No RLSA in any Rocky release cites CVE-2026-46243 or
+  the `vet_description` fix; all three kernels remain unpatched for
+  CIFSwitch.  SELinux-enforcing default may still constrain the upcall
+  (see Rocky notes).
 - **Amazon Linux** (via the Amazon Linux core repodata): 2023 ⇒ kernel
   6.1.174-217.345.amzn2023 / cifs-utils 7.5 (default 6.1 stream;
   `kernel6.12`/`kernel6.18` streams not tracked separately) — one upstream
