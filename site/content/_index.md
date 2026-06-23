@@ -32,7 +32,7 @@ adoption is being tracked below.  The Linux kernel CNA assigned
 | Public disclosure | 2026-05-27 — [heyitsas.im/posts/cifswitch][writeup] |
 | Public PoC | [manizada/CIFSwitch][poc] |
 | KEV listed | Not listed |
-| EPSS | 0.00145 (4th percentile), scored 2026-06-15 |
+| EPSS | 0.00310 (22nd percentile), scored 2026-06-23 |
 
 ## How the chain works
 
@@ -434,7 +434,7 @@ until a patched kernel is installed.
   score.  Kernel CNA submitted CVSS 3.1 7.1 High
   `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N`; CISA-ADP independently scored
   7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (A:H vs CNA's A:N).
-  EPSS scores it 0.00145 (4th percentile, scored 2026-06-15); CISA KEV
+  EPSS scores it 0.00310 (22nd percentile, scored 2026-06-23); CISA KEV
   does not list it.  NVD's own CWE mapping is now `NVD-CWE-noinfo`
   (unclassified); CWE-20 (Improper Input Validation) is attributed to
   CISA-ADP in the NVD record.  The Summary's CWE attribution has been
