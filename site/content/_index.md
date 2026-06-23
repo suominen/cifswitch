@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-20
+lastmod: 2026-06-23
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -131,7 +131,7 @@ tracked here and appear only as references where relevant.
 | Rocky Linux | 10 | 6.12.0-211.16.1.el10_2 | 7.5 | — | :x: Vulnerable — see Rocky notes |
 | Rocky Linux | 9 | 5.14.0-687.12.1.el9_8 | 7.5 | — | :x: Vulnerable — see Rocky notes |
 | Rocky Linux | 8 | 4.18.0-553.126.1.el8_10 | 7.0 | — | :x: Vulnerable — see Rocky notes |
-| Amazon Linux | 2023 | 6.1.172-216.329.amzn2023 | 7.5 | — | :x: Vulnerable |
+| Amazon Linux | 2023 | 6.1.172-216.339.amzn2023 | 7.5 | 2026-06-22 | :white_check_mark: Fixed |
 | Amazon Linux | 2 | 4.14.355-282.729.amzn2 | 6.2 | — | :x: Vulnerable — cifs-utils 6.2 &lt; 6.14; primary exploit path absent, reduced exposure |
 {.distros}
 
@@ -353,7 +353,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-20.*
+*Last verified 2026-06-23.*
 
 ### Upstream
 
@@ -419,11 +419,11 @@ until a patched kernel is installed.
   the `vet_description` fix; all three kernels remain unpatched for
   CIFSwitch.  SELinux-enforcing default may still constrain the upcall
   (see Rocky notes).
-- **Amazon Linux** (via the Amazon Linux core repodata): 2023 ⇒ kernel
-  6.1.174-217.345.amzn2023 / cifs-utils 7.5 (default 6.1 stream;
-  `kernel6.12`/`kernel6.18` streams not tracked separately) — one upstream
-  point release short of first-fixed 6.1.175, kernel unpatched; 2 ⇒ core
-  kernel 4.14.355-282.729.amzn2 / cifs-utils 6.2, unpatched.  AL2's
+- **Amazon Linux** (via the Amazon Linux core repodata and ALAS advisories):
+  2023 ⇒ **ALAS2023-2026-1865** (released 2026-06-22) fixes CVE-2026-46243
+  with kernel `6.1.172-216.339.amzn2023`; row flips to
+  `:white_check_mark: Fixed`.  2 ⇒ core kernel 4.14.355-282.729.amzn2 /
+  cifs-utils 6.2, unpatched; no ALAS2 advisory for CVE-2026-46243.  AL2's
   cifs-utils 6.2 is < 6.14 — primary exploit path absent, reduced exposure.
 - **Upstream stable backports landed 2026-06-01** — all tracked stable
   branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
