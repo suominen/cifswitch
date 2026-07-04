@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-06-30
+lastmod: 2026-07-04
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -87,14 +87,14 @@ is in progress; no kernel advisory has referenced the fix yet.
 | Branch | Status | Current | Notes |
 |---|---|---|---|
 | Linus mainline | :white_check_mark: Carries `3da1fdf4efbc` | — | merged post-v7.0; first appeared in v7.1 |
-| 7.1.x | :white_check_mark: Carries fix | 7.1.2 | fix predates this branch; first fixed: 7.1.1 |
+| 7.1.x | :white_check_mark: Carries fix | 7.1.3 | fix predates this branch; first fixed: 7.1.1 |
 | 7.0.x | :white_check_mark: Backported | 7.0.14 (EOL) | first fixed: 7.0.11 |
-| 6.18.x | :white_check_mark: Backported | 6.18.37 | first fixed: 6.18.34 |
-| 6.12.x | :white_check_mark: Backported | 6.12.94 | LTS 2028-12; first fixed: 6.12.92 |
-| 6.6.x  | :white_check_mark: Backported | 6.6.143 | LTS 2026-12; first fixed: 6.6.142 |
-| 6.1.x  | :white_check_mark: Backported | 6.1.176 | LTS 2026-12; first fixed: 6.1.175 |
-| 5.15.x | :white_check_mark: Backported | 5.15.210 | LTS 2026-12; first fixed: 5.15.209 |
-| 5.10.x | :white_check_mark: Backported | 5.10.259 | LTS 2026-12; first fixed: 5.10.258 |
+| 6.18.x | :white_check_mark: Backported | 6.18.38 | first fixed: 6.18.34 |
+| 6.12.x | :white_check_mark: Backported | 6.12.95 | LTS 2028-12; first fixed: 6.12.92 |
+| 6.6.x  | :white_check_mark: Backported | 6.6.144 | LTS 2026-12; first fixed: 6.6.142 |
+| 6.1.x  | :white_check_mark: Backported | 6.1.177 | LTS 2026-12; first fixed: 6.1.175 |
+| 5.15.x | :white_check_mark: Backported | 5.15.211 | LTS 2026-12; first fixed: 5.15.209 |
+| 5.10.x | :white_check_mark: Backported | 5.10.260 | LTS 2026-12; first fixed: 5.10.258 |
 
 When verifying a kernel tree directly, the file is
 `fs/smb/client/cifs_spnego.c` on 6.7 and later, and
@@ -353,7 +353,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-06-30.*
+*Last verified 2026-07-04.*
 
 ### Upstream
 
@@ -369,12 +369,11 @@ until a patched kernel is installed.
 - **All stable branches now carry the backport**: it landed in all
   tracked branches on 2026-06-01.  First fixed point releases: 7.0.11,
   6.18.34, 6.12.92, 6.6.142, 6.1.175, 5.15.209, 5.10.258 (all 2026-06-01,
-  confirmed per branch).  Current point releases per kernel.org
-  finger_banner: 7.1.2, 7.0.14 (EOL), 6.18.37, 6.12.94, 6.6.143, 6.1.176,
-  5.15.210, 5.10.259.  7.0.x is now EOL; 7.1.x is the current stable
-  series.
+  confirmed per branch).  Current point releases (via ~/src/linux/stable):
+  7.1.3, 7.0.14 (EOL), 6.18.38, 6.12.95, 6.6.144, 6.1.177, 5.15.211,
+  5.10.260.  7.0.x is now EOL; 7.1.x is the current stable series.
 - **7.1.x stable branch**: 7.1.x is now the current stable series (7.0.x
-  EOL at 7.0.14); current 7.1.x release is 7.1.2.  The fix predates the
+  EOL at 7.0.14); current 7.1.x release is 7.1.3.  The fix predates the
   entire 7.1.x branch — every 7.1.x release carries it.
 
 ### Distributions
