@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-07-04
+lastmod: 2026-07-05
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -123,7 +123,7 @@ tracked here and appear only as references where relevant.
 | Debian | 12 (bookworm) | 6.1.174-1 | 7.0 | 2026-05-28 | :white_check_mark: Fixed |
 | Debian | 11 (bullseye, LTS) | 5.10.257-1 | 6.11 | 2026-05-29 | :white_check_mark: Fixed |
 | Proxmox VE | 9 | 7.0.12-1-pve | 7.4 | 2026-06-20 | :white_check_mark: Fixed |
-| Proxmox VE | 8 | 6.8.12-28-pve | 7.0 | — | :x: Vulnerable — no fixed kernel yet |
+| Proxmox VE | 8 | 6.8.12-27-pve | 7.0 | 2026-05-29 | :white_check_mark: Fixed |
 | NixOS | Unstable | 7.0.11 | 7.5 | 2026-06-08 | :white_check_mark: Fixed |
 | NixOS | Unstable (small) | 7.0.11 | 7.5 | 2026-06-02 | :white_check_mark: Fixed |
 | NixOS | 25.11 | 7.0.11 | 7.4 | 2026-06-06 | :white_check_mark: Fixed |
@@ -353,7 +353,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-07-04.*
+*Last verified 2026-07-05.*
 
 ### Upstream
 
@@ -401,14 +401,17 @@ until a patched kernel is installed.
   7.0.11 (from 7.0.10) since the previous check (via the channel
   pointer).  cifs-utils 7.5 on unstable channels, 7.4 on the 25.11
   channels.
-- **Proxmox VE** (via the `pve-no-subscription` `Packages` index): VE 9
-  `proxmox-kernel-7.0` series has advanced to 7.0.12-1-pve, which is ≥
-  7.0.11 (first fixed in the 7.0.x series) — row flips to
-  `:white_check_mark: Fixed`.  VE 8 remains on `proxmox-kernel-6.8`
-  (6.8.x carries no upstream backport of the fix) — still
-  `:x: Vulnerable`.  Proxmox ships its own kernel but Debian userland;
-  cifs-utils is the Debian base version (trixie 7.4, bookworm 7.0 —
-  both ≥ 6.14).
+- **Proxmox VE** (via the `pve-no-subscription` `Packages` index and
+  the Proxmox security advisory thread): VE 9 `proxmox-kernel-7.0`
+  series at 7.0.12-1-pve, ≥ upstream first-fixed 7.0.11 — remains
+  `:white_check_mark: Fixed`.  VE 8: **PSA-2026-00024-1** (CIFSwitch,
+  2026-05-29) ships the vendor backport of `3da1fdf4efbc` in
+  `proxmox-kernel-6.8.12-27-pve` for Bookworm-based products — row
+  flips to `:white_check_mark: Fixed`.  The Proxmox fix predates the
+  upstream stable backport (first landed 2026-06-01); latest 6.8.x
+  build is now 6.8.12-32-pve.  Proxmox ships its own kernel but Debian
+  userland; cifs-utils is the Debian base version (trixie 7.4,
+  bookworm 7.0 — both ≥ 6.14).
 - **Rocky Linux** (via the Rocky errata CVE-keyed API): **Rocky 8** —
   RLSA-2026:23258 (2026-06-11) explicitly cites CVE-2026-46243 (*smb:
   client: reject userspace cifs.spnego descriptions*) and ships kernel
