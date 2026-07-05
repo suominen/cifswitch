@@ -412,17 +412,16 @@ until a patched kernel is installed.
   build is now 6.8.12-32-pve.  Proxmox ships its own kernel but Debian
   userland; cifs-utils is the Debian base version (trixie 7.4,
   bookworm 7.0 — both ≥ 6.14).
-- **Rocky Linux** (via the Rocky errata CVE-keyed API): **Rocky 8** —
+- **Rocky Linux** (via Rocky BaseOS repodata): **Rocky 8** —
   RLSA-2026:23258 (2026-06-11) explicitly cites CVE-2026-46243 (*smb:
   client: reject userspace cifs.spnego descriptions*) and ships kernel
-  `4.18.0-553.129.1.el8_10`; row flips to `:white_check_mark: Fixed`.
-  **Rocky 9** — no RLSA cites CVE-2026-46243; latest kernel advisory
-  RLSA-2026:25217 (2026-06-13) at 5.14.0-687.15.1.el9_8 does not
-  include the fix; still `:x: Vulnerable`.  **Rocky 10** —
-  RLSA-2026:30129 (2026-06-27) at 6.12.0-211.28.1.el10_2 does not
-  cite CVE-2026-46243; still `:x: Vulnerable`.  SELinux-enforcing
-  default may still constrain the upcall on unpatched releases (see
-  Rocky notes).
+  `4.18.0-553.129.1.el8_10`; row `:white_check_mark: Fixed`.
+  **Rocky 9** — no RLSA cites CVE-2026-46243; latest kernel in BaseOS
+  is `5.14.0-687.17.1.el9_8`; still `:x: Vulnerable`.  **Rocky 10** —
+  no RLSA cites CVE-2026-46243; latest kernel in BaseOS is
+  `6.12.0-211.26.1.el10_2`; still `:x: Vulnerable`.
+  SELinux-enforcing default may still constrain the upcall on unpatched
+  releases (see Rocky notes).
 - **Amazon Linux** (via the Amazon Linux core repodata and ALAS advisories):
   2023 ⇒ **ALAS2023-2026-1865** (released 2026-06-22) fixes CVE-2026-46243
   with kernel `6.1.172-216.339.amzn2023`; row `:white_check_mark: Fixed`.
