@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-07-05
+lastmod: 2026-07-06
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -128,8 +128,8 @@ tracked here and appear only as references where relevant.
 | NixOS | Unstable (small) | 7.0.11 | 7.5 | 2026-06-02 | :white_check_mark: Fixed |
 | NixOS | 25.11 | 7.0.11 | 7.4 | 2026-06-06 | :white_check_mark: Fixed |
 | NixOS | 25.11 (small) | 7.0.11 | 7.4 | 2026-06-03 | :white_check_mark: Fixed |
-| Rocky Linux | 10 | 6.12.0-211.16.1.el10_2 | 7.5 | — | :x: Vulnerable — see Rocky notes |
-| Rocky Linux | 9 | 5.14.0-687.12.1.el9_8 | 7.5 | — | :x: Vulnerable — see Rocky notes |
+| Rocky Linux | 10 | 6.12.0-211.22.1.el10_2 | 7.5 | 2026-06-13 | :white_check_mark: Fixed |
+| Rocky Linux | 9 | 5.14.0-687.15.1.el9_8 | 7.5 | 2026-06-13 | :white_check_mark: Fixed |
 | Rocky Linux | 8 | 4.18.0-553.129.1.el8_10 | 7.0 | 2026-06-11 | :white_check_mark: Fixed |
 | Amazon Linux | 2023 | 6.1.172-216.339.amzn2023 | 7.5 | 2026-06-22 | :white_check_mark: Fixed |
 | Amazon Linux | 2 | 4.14.355-282.731.amzn2 | 6.2 | 2026-06-22 | :white_check_mark: Fixed |
@@ -148,9 +148,7 @@ On the EL family `cifs` is a loadable module and SELinux is enforcing by
 default, which may constrain `cifs.upcall`'s ability to load an arbitrary
 NSS module — confirm against the actual policy before treating a release
 as not exploitable.  The shipped `cifs-utils` version is the other gate:
-older EL releases may predate the 6.14 namespace-switch upcall.  Watch for
-RLSAs (and the matching RHSA / ALSA references) citing CVE-2026-46243 to
-carry the fixed kernel.
+older EL releases may predate the 6.14 namespace-switch upcall.
 
 ## Detection
 
@@ -353,7 +351,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-07-05.*
+*Last verified 2026-07-06.*
 
 ### Upstream
 
@@ -412,16 +410,21 @@ until a patched kernel is installed.
   build is now 6.8.12-32-pve.  Proxmox ships its own kernel but Debian
   userland; cifs-utils is the Debian base version (trixie 7.4,
   bookworm 7.0 — both ≥ 6.14).
-- **Rocky Linux** (via Rocky BaseOS repodata): **Rocky 8** —
-  RLSA-2026:23258 (2026-06-11) explicitly cites CVE-2026-46243 (*smb:
-  client: reject userspace cifs.spnego descriptions*) and ships kernel
-  `4.18.0-553.129.1.el8_10`; row `:white_check_mark: Fixed`.
-  **Rocky 9** — no RLSA cites CVE-2026-46243; latest kernel in BaseOS
-  is `5.14.0-687.17.1.el9_8`; still `:x: Vulnerable`.  **Rocky 10** —
-  no RLSA cites CVE-2026-46243; latest kernel in BaseOS is
-  `6.12.0-211.26.1.el10_2`; still `:x: Vulnerable`.
-  SELinux-enforcing default may still constrain the upcall on unpatched
-  releases (see Rocky notes).
+- **Rocky Linux** (via Rocky BaseOS repodata and Rocky errata API):
+  **Rocky 8** — RLSA-2026:23258 (2026-06-11) explicitly cites
+  CVE-2026-46243 (*smb: client: reject userspace cifs.spnego
+  descriptions*) and ships kernel `4.18.0-553.129.1.el8_10`; row
+  `:white_check_mark: Fixed`.  **Rocky 9** — no Rocky RLSA explicitly
+  cites CVE-2026-46243; Rocky skipped the RHEL first-fixed
+  `5.14.0-687.13.1.el9_8`, publishing instead RLSA-2026:25217
+  (2026-06-13) at kernel `5.14.0-687.15.1.el9_8`, which is cumulative
+  from the RHEL fix (RHSA-2026:24381 / ALSA-2026:24381); row flips to
+  `:white_check_mark: Fixed`.  **Rocky 10** — no Rocky RLSA explicitly
+  cites CVE-2026-46243; Rocky skipped the RHEL first-fixed
+  `6.12.0-211.20.1.el10_2`, publishing instead RLSA-2026:25191
+  (2026-06-13) at kernel `6.12.0-211.22.1.el10_2`, which is cumulative
+  from the RHEL fix (RHSA-2026:23329 / ALSA-2026:23329); row flips to
+  `:white_check_mark: Fixed`.
 - **Amazon Linux** (via the Amazon Linux core repodata and ALAS advisories):
   2023 ⇒ **ALAS2023-2026-1865** (released 2026-06-22) fixes CVE-2026-46243
   with kernel `6.1.172-216.339.amzn2023`; row `:white_check_mark: Fixed`.
@@ -432,7 +435,8 @@ until a patched kernel is installed.
 - **Upstream stable backports landed 2026-06-01** — all tracked stable
   branches now carry the fix (7.0.11, 6.18.34, 6.12.92, 6.6.142,
   6.1.175, 5.15.209, 5.10.258).  Rocky 8 (RLSA-2026:23258, 2026-06-11)
-  is the first distro kernel advisory to cite CVE-2026-46243.
+  is the first distro kernel advisory to cite CVE-2026-46243.  All
+  fifteen tracked distribution rows are now `:white_check_mark: Fixed`.
 - **CVE-keyed feeds**: NVD record status *Analyzed* (initial analysis
   completed 2026-06-09; CWE-20); NIST has not yet published its own CVSS
   score.  Kernel CNA submitted CVSS 3.1 7.1 High
