@@ -10,12 +10,15 @@ cover:
   hiddenInSingle: true
 ---
 
+*This tracker is no longer updated.  Every tracked distribution has
+shipped a kernel carrying the fix.*
+
 *CIFSwitch is a Linux local privilege escalation: the kernel CIFS client
 never validated that a `cifs.spnego` key description originated from
 kernel code, so an unprivileged user can forge one and steer the rootful
 `cifs.upcall` helper into loading an attacker-controlled NSS module.  The
-kernel fix (commit [`3da1fdf4efbc`][fix-commit]) is in mainline; distro
-adoption is being tracked below.  The Linux kernel CNA assigned
+kernel fix (commit [`3da1fdf4efbc`][fix-commit]) is in mainline and in
+every tracked distribution.  The Linux kernel CNA assigned
 [`CVE-2026-46243`][nvd] on 2026-06-01.*
 
 ## Summary
