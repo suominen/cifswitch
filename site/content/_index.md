@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-07-06
+lastmod: 2026-07-08
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -26,8 +26,8 @@ adoption is being tracked below.  The Linux kernel CNA assigned
 | Alias | CIFSwitch |
 | Component | Kernel: `fs/smb/client/cifs_spnego.c` (pre-6.7 path: `fs/cifs/cifs_spnego.c`) · Userspace: `cifs.upcall` from cifs-utils ≥ 6.14 |
 | Type | Local Privilege Escalation (LPE) — forged `cifs.spnego` key → rootful upcall → attacker NSS-module load |
-| CWE | [CWE-269][cwe-269] Improper Privilege Management · [CWE-284][cwe-284] Improper Access Control (CISA-ADP: [CWE-20][cwe-20] Improper Input Validation; NVD: unclassified) |
-| CVSS | 7.1 (High) — `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N` (kernel CNA) · 7.8 (High) — `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (CISA-ADP) |
+| CWE | [CWE-269][cwe-269] Improper Privilege Management · [CWE-284][cwe-284] Improper Access Control (CISA-ADP: [CWE-20][cwe-20] Improper Input Validation; Red Hat ADP: [CWE-825][cwe-825] Expired Pointer Dereference; NVD: unclassified) |
+| CVSS | 7.1 (High) — `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N` (kernel CNA) · 7.8 (High) — `CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (CISA-ADP, Red Hat ADP) |
 | Discoverer | Asim Viladi Oglu Manizada |
 | Public disclosure | 2026-05-27 — [heyitsas.im/posts/cifswitch][writeup] |
 | Public PoC | [manizada/CIFSwitch][poc] |
@@ -351,7 +351,7 @@ until a patched kernel is installed.
 
 ## Verification log
 
-*Last verified 2026-07-06.*
+*Last verified 2026-07-08.*
 
 ### Upstream
 
@@ -437,17 +437,18 @@ until a patched kernel is installed.
   6.1.175, 5.15.209, 5.10.258).  Rocky 8 (RLSA-2026:23258, 2026-06-11)
   is the first distro kernel advisory to cite CVE-2026-46243.  All
   fifteen tracked distribution rows are now `:white_check_mark: Fixed`.
-- **CVE-keyed feeds**: NVD record status *Analyzed* (initial analysis
-  completed 2026-06-09; CWE-20); NIST has not yet published its own CVSS
-  score.  Kernel CNA submitted CVSS 3.1 7.1 High
-  `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N`; CISA-ADP independently scored
-  7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (A:H vs CNA's A:N).
-  EPSS scores it 0.00353 (27th percentile, scored 2026-06-30); CISA KEV
-  does not list it.  NVD's own CWE mapping is now `NVD-CWE-noinfo`
-  (unclassified); CWE-20 (Improper Input Validation) is attributed to
-  CISA-ADP in the NVD record.  The Summary's CWE attribution has been
-  updated accordingly; the privilege-management framing (CWE-269 /
-  CWE-284) is unchanged.
+- **CVE-keyed feeds**: NVD record status *Modified* (initial analysis
+  2026-06-09; subsequently updated by the Red Hat ADP).  NIST has not
+  yet published its own CVSS score.  Kernel CNA submitted CVSS 3.1 7.1
+  High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N`; CISA-ADP independently
+  scored 7.8 High `AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` (A:H vs CNA's
+  A:N); Red Hat ADP contributed the same 7.8 High score and attributed
+  CWE-825 (Expired Pointer Dereference).  EPSS scores it 0.00353 (27th
+  percentile, scored 2026-06-30); CISA KEV does not list it.  NVD's own
+  CWE mapping remains `NVD-CWE-noinfo` (unclassified); CWE-20 (Improper
+  Input Validation) is attributed to CISA-ADP and CWE-825 (Expired
+  Pointer Dereference) to Red Hat ADP in the NVD record.  The Summary's
+  CWE and CVSS attributions have been updated accordingly.
 
 ## References
 
@@ -470,4 +471,5 @@ until a patched kernel is installed.
 [cwe-269]: https://cwe.mitre.org/data/definitions/269.html
 [cwe-284]: https://cwe.mitre.org/data/definitions/284.html
 [cwe-20]: https://cwe.mitre.org/data/definitions/20.html
+[cwe-825]: https://cwe.mitre.org/data/definitions/825.html
 [nvd]: https://nvd.nist.gov/vuln/detail/CVE-2026-46243
