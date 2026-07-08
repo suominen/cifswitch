@@ -22,13 +22,12 @@ The rendered site is published at <https://kimmo.cloud/cifswitch/>.
 
 ## Your task
 
-Keep `site/content/_index.md` (the canonical tracker) up to date as the
-kernel fix lands in stable trees and distro advisories follow.  After
-edits, rebuild with `make build` and publish with `make dist`.
-
-A scheduled background agent runs against this repo to refresh the
-tracker on its own.  If you find the file has been edited since you last
-looked, that's likely why — re-read before assuming stale state.
+**This tracker was archived on 2026-07-08**: every tracked distribution
+row is fixed, the "no longer updated" notice is published, and the
+auto-update (timer, unit symlinks, worktree, `auto-update` branch) has
+been unwired.  Do not resume routine updates.  Edit
+`site/content/_index.md` only for corrections; after edits, rebuild
+with `make build` and publish with `make dist`.
 
 ## Repo layout
 
@@ -280,6 +279,14 @@ to still be resolvable when it runs.
    ```
    systemctl --user disable --now cifswitch-tracker-update.timer
    ```
+
+   Because the unit definitions are symlinks, `disable` also removes
+   the timer's own symlink from `~/.config/systemd/user/` (systemd
+   treats it as a linked unit) — step 2 then only has the `.service`
+   link left to remove.  The timer still ends up `failed (Result:
+   resources)` after the reload ("Unit to trigger vanished"), so finish
+   with `systemctl --user reset-failed cifswitch-tracker-update.timer`
+   regardless of order.
 
 2. **Remove the unit-definition symlinks** from the search path:
 
