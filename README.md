@@ -1,30 +1,26 @@
 # CIFSwitch — CIFS cifs.spnego key-origin LPE tracking site
 
-Patch-status tracker for **CIFSwitch**, a Linux kernel local privilege
-escalation in the CIFS client: the kernel never validated that a
-`cifs.spnego` key description originated from kernel code, so an
-unprivileged user can forge one and steer the rootful `cifs.upcall`
-helper (from cifs-utils ≥ 6.14) into switching into an attacker-controlled
-namespace and loading an attacker-supplied NSS module — arbitrary code as
-root.  Discovered by Asim Viladi Oglu Manizada and
-[disclosed on 2026-05-27](https://heyitsas.im/posts/cifswitch/).  Public
-PoC: <https://github.com/manizada/CIFSwitch>.
+Source for the **CIFSwitch** patch-status tracker: a single-page site
+recording which distributions have shipped a fix for the CIFS
+`cifs.spnego` key-origin privilege escalation in the Linux kernel.
 
-The canonical fix is Linux kernel mainline commit
-[`3da1fdf4efbc`](https://github.com/torvalds/linux/commit/3da1fdf4efbc490041eb4f836bf596201203f8f2),
-which adds a `.vet_description` hook that rejects forged key descriptions.
+## Where the facts live
 
-Tracked as
-[`CVE-2026-46243`](https://nvd.nist.gov/vuln/detail/CVE-2026-46243),
-assigned by the Linux kernel CNA on 2026-06-01.
+Everything about the bug — CVE IDs, affected and fixed versions, upstream
+fix commits, discovery and disclosure credit, and final per-distribution
+patch status — belongs to the tracker page, not to this README:
 
-The rendered site is published at **<https://kimmo.cloud/cifswitch/>**.
-Deployment plan and current setup state live in [`WEBSITE.md`](WEBSITE.md).
+- **Rendered:** <https://kimmo.cloud/cifswitch/>
+- **Source:** [`site/content/_index.md`](site/content/_index.md)
 
-## Source of truth
+Edit that file; everything else in this repo is build infrastructure.
 
-The tracker is a single Hugo page: [`site/content/_index.md`](site/content/_index.md).
-Edit that file; everything else is build infrastructure.
+None of it is restated here on purpose.  A second copy in this README
+would only rot as the tracker page is revised.  Resist re-adding a
+summary.
+
+Deployment plan and current setup state live in
+[`WEBSITE.md`](WEBSITE.md).
 
 ## Local development
 
