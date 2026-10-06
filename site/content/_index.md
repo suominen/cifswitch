@@ -3,7 +3,7 @@ title: "CVE-2026-46243 — CIFSwitch tracking"
 description: "Linux kernel CIFS cifs.spnego key-description origin LPE, via the rootful cifs.upcall helper — distro patch status tracker"
 layout: "single"
 date: 2026-05-27
-lastmod: 2026-07-08
+lastmod: 2026-10-06
 cover:
   image: "cifswitch-tracker.png"
   alt: "CVE-2026-46243 — CIFSwitch CIFS cifs.spnego key-origin LPE tracker"
@@ -121,7 +121,7 @@ tracked here and appear only as references where relevant.
 | Distribution | Release | Kernel | cifs-utils | Fixed since | Status |
 |---|---|---|---|---|---|
 | Debian | sid (unstable) | 7.0.12-1 | 7.4 | 2026-06-10 | :white_check_mark: Fixed |
-| Debian | forky (testing) | 7.0.10-1 | 7.4 | 2026-05-28 | :white_check_mark: Fixed |
+| Debian | forky (testing) | 7.0.10-1 | 7.4 | 2026-06-03 | :white_check_mark: Fixed |
 | Debian | 13 (trixie) | 6.12.90-2 | 7.4 | 2026-05-28 | :white_check_mark: Fixed |
 | Debian | 12 (bookworm) | 6.1.174-1 | 7.0 | 2026-05-28 | :white_check_mark: Fixed |
 | Debian | 11 (bullseye, LTS) | 5.10.257-1 | 6.11 | 2026-05-29 | :white_check_mark: Fixed |
@@ -390,7 +390,8 @@ until a patched kernel is installed.
   confirmed via madison): all five tracked releases now carry the kernel
   fix.  sid: 7.0.12-1 (already fixed; main archive).  forky: 7.0.10-1
   fixed — Debian cherry-picked `3da1fdf4efbc` into 7.0.10, predating
-  the upstream first-fixed 7.0.11.  trixie: 6.12.90-2 via DSA 6305-1.
+  the upstream first-fixed 7.0.11; it migrated to testing 2026-06-03,
+  per snapshot.debian.org's `dists/testing` index.  trixie: 6.12.90-2 via DSA 6305-1.
   bookworm: 6.1.174-1 via DSA 6306-1.  bullseye: 5.10.257-1 via
   DLA-4606-1.  All three DSA/DLA publications predate CVE assignment
   (2026-06-01); the packages were retroactively linked to CVE-2026-46243
